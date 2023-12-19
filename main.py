@@ -472,4 +472,4 @@ def text_frequently(text) :
 def text_correlate(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate(frequency_text[0], frequency_text[1])
 
-    return df_tfidf # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
+    return df_tfidf[0] # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
