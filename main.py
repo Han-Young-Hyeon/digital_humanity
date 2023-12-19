@@ -50,7 +50,7 @@ def total_data(keyword, 고전번역서_ck, 고전원문_ck, 한국문집총간_
         total_data = pd.concat([total_data, df[0]], axis=0)
         total_data_with_url = pd.concat([total_data_with_url, df[1]], axis=0)
 
-    return total_data, total_data_with_url
+    return total_data, total_data_with_url # total_data_with_url UI 상에 들어갈 데이터 프레임
 
 #### Raw 데이터 만들기 ####
 def korean_search(keyword, secld, start = 0, rows = 1000) :
@@ -274,6 +274,24 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 total_data를 �
     fig2.show()
 
     return frequency, df ## 첫번째 데이터프레임은 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
+
+### 워드 클라우드 생성 ###
+from wordcloud import WordCloud
+
+def word_cloud(df) : # total data에서 만들어진 것 중 첫번째 데이터프레임이 df
+    df['token_2'] = df['기록'].progress_map(lambda x:tokenize_wordcloud(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
+
+    counts=Counter(list(itertools.chain(*df['token_2'].tolist())))
+    tags = counts.most_common(40)
+
+    font_path = 'C:/Windows/Fonts/gulim.ttc'
+    wc = WordCloud(font_path=font_path, background_color="white", relative_scaling=0.2) ### font source need
+    cloud = wc.generate_from_frequencies(dict(tags))
+
+    plt.figure()
+    plt.imshow(cloud)
+    plt.axis('off')
+    plt.show()
 
 ### 연관어 및 네트워크 분석에 필요한 함수 : 신경 쓰지 않으셔도 됩니다. ###
 def build_doc_term_mat(doc_list):
