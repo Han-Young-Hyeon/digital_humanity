@@ -101,7 +101,7 @@ def get_sentiment_score(text):
         return None
 
 # 시대에 따른 키워드에 대한 감성 변화 그래프를 제시하는 함수 : 문장 길이 때문에 일부 누락이 생기는 것 존재 주의
-def time_series_data(df) :
+def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 korean_search를 통해 만들어진 것 중 두번째 데이터 프레임 사용 (ex. data[1])
     df['저자생년'] = df['저자생년'].astype(int)
     df['저자몰년'] = df['저자몰년'].astype(int)
 
@@ -162,7 +162,6 @@ def gpt_supporter(text):
 
 ### 빈도 분석 / 네트워크 분석 / 연관어 분석 ###
 from tqdm import tqdm
-tqdm.pandas()
 from collections import Counter
 import itertools
 
@@ -181,9 +180,11 @@ from operator import itemgetter
 import matplotlib.pyplot as plt
 import networkx as nx
 import udkanbun
-lzh=udkanbun.load()
 
-# 신경 안 써도 되는 함수
+lzh=udkanbun.load()
+tqdm.pandas()
+
+# 신경 안 써도 되는 함수 : 형태소에 따른 토큰화 함수
 def tokenize(sentence,allow_pos=[]):
     try:
         s = lzh(sentence)
@@ -195,60 +196,10 @@ def tokenize(sentence,allow_pos=[]):
     except AttributeError as e:
         print(f"Error processing sentence: {sentence}. Error: {e}")
         return []
-    
-def build_doc_term_mat(doc_list):
-    vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
-    dt_mat = vectorizer.fit_transform(doc_list)
-    vocab = vectorizer.get_feature_names()
-    return dt_mat, vocab
-
-def build_word_cooc_mat(dt_mat):
-    co_mat = dt_mat.T * dt_mat
-    co_mat.setdiag(0)
-    return co_mat.toarray()
-
-def get_word_sim_mat(co_mat):
-    sim_mat = pdist(co_mat, metric='cosine')
-    sim_mat = squareform(sim_mat)
-    return sim_mat
-
-def get_sorted_word_sims(sim_mat, vocab):
-    sims = []
-    for i, j in combinations(range(len(vocab)), 2):
-        if sim_mat[i, j] == 0:
-            continue
-        sims.append((vocab[i], vocab[j], sim_mat[i, j]))
-    mat_to_list = sorted(sims, key=itemgetter(2), reverse=True)
-    return mat_to_list
-
-def build_word_sim_network(mat_to_list, minimum_span=False):
-    G = nx.Graph()
-    NUM_MAX_WORDS = 30
-    for word1, word2, sim in mat_to_list[:NUM_MAX_WORDS]:
-        G.add_edge(word1, word2, weight=sim)
-    if minimum_span:
-        return nx.minimum_spanning_tree(G)
-    else:
-        return G
-
-def draw_network(G):
-    weights = nx.get_edge_attributes(G,'weight').values()
-    width = [weight / max(weights)*3 for weight in weights]
-
-    nx.draw_networkx(G,
-        pos=nx.kamada_kawai_layout(G),
-        node_size=500,
-        node_color="blue",
-        font_color="white",
-        font_family='NanumBarunGothic',
-        with_labels=True,
-        font_size=5,
-        width=width)
-    plt.axis("off")
 
 import plotly.graph_objects as go
 
-def frequency_analysis(df) :
+def frequency_analysis(df) : # 여기 데이터 프레임에는 korean_search를 통해 만들어진 데이터 프레임 중 첫번째를 사용 (ex. data[0])
     df['token'] = df['기록'].progress_map(lambda x:tokenize(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
     
     cnt = Counter(list(itertools.chain(*df['token'].tolist())))
@@ -305,3 +256,55 @@ def frequency_analysis(df) :
     fig2.show()
 
     return frequency
+
+### 연관어 분석 ###
+def build_doc_term_mat(doc_list):
+    vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
+    dt_mat = vectorizer.fit_transform(doc_list)
+    vocab = vectorizer.get_feature_names()
+    return dt_mat, vocab
+
+def build_word_cooc_mat(dt_mat):
+    co_mat = dt_mat.T * dt_mat
+    co_mat.setdiag(0)
+    return co_mat.toarray()
+
+def get_word_sim_mat(co_mat):
+    sim_mat = pdist(co_mat, metric='cosine')
+    sim_mat = squareform(sim_mat)
+    return sim_mat
+
+def get_sorted_word_sims(sim_mat, vocab):
+    sims = []
+    for i, j in combinations(range(len(vocab)), 2):
+        if sim_mat[i, j] == 0:
+            continue
+        sims.append((vocab[i], vocab[j], sim_mat[i, j]))
+    mat_to_list = sorted(sims, key=itemgetter(2), reverse=True)
+    return mat_to_list
+
+### 네트워크 분석 ###
+def build_word_sim_network(mat_to_list, minimum_span=False):
+    G = nx.Graph()
+    NUM_MAX_WORDS = 30
+    for word1, word2, sim in mat_to_list[:NUM_MAX_WORDS]:
+        G.add_edge(word1, word2, weight=sim)
+    if minimum_span:
+        return nx.minimum_spanning_tree(G)
+    else:
+        return G
+
+def draw_network(G):
+    weights = nx.get_edge_attributes(G,'weight').values()
+    width = [weight / max(weights)*3 for weight in weights]
+
+    nx.draw_networkx(G,
+        pos=nx.kamada_kawai_layout(G),
+        node_size=500,
+        node_color="blue",
+        font_color="white",
+        font_family='NanumBarunGothic',
+        with_labels=True,
+        font_size=5,
+        width=width)
+    plt.axis("off")
