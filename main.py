@@ -16,7 +16,7 @@ lzh=udkanbun.load()
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
-font_path = 'C:/Windows/Fonts/gulim.ttc'
+font_path = 'gulim.ttc'
 font_name = fm.FontProperties(fname=font_path).get_name()
 plt.rcParams['font.family'] = font_name
 
@@ -476,8 +476,49 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
 ###### 사용자 입력 텍스트 단순 분석 ######
 def text_frequently(text) :
     df = pd.DataFrame({"기록" : text})
-    frequency_analysis(df)
-    return df ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    df_cr = frequency_analysis(df)
+    word_cloud(df)
+    return df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
-def text_correlate() :
-    return "거의 완성"
+def text_correlate(df) : ## text_frequently의 함숫값
+    token_tag_list = df['token'].map(lambda x: ' '.join(x)).tolist()
+
+    vect = CountVectorizer(tokenizer=str.split)
+    document_term_matrix = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
+
+    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names())
+
+    vect = TfidfVectorizer(tokenizer=str.split)
+    tfvect = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
+
+    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names())
+
+    tfidf=[]
+    for col in tfidf_df.columns :
+        tfidf.append(tfidf_df[col].sum())
+
+    df_tfidf=pd.DataFrame(list(zip(tfidf_df.columns,tfidf)), columns=['words', 'tfidf_score'])
+    df_tfidf=df_tfidf.sort_values('tfidf_score', ascending=False)
+    df_tfidf.reset_index(drop=True, inplace=True)
+
+    dt_matrix, vocab_list= build_doc_term_mat(token_tag_list)
+    co_matrix_raw = build_word_cooc_mat(dt_matrix)
+
+    df_co = pd.DataFrame(co_matrix_raw, columns=vocab_list, index=vocab_list)
+    co_matrix = np.matrix(df_co)
+
+    sim_matrix = get_word_sim_mat(co_matrix)
+    df_sim = pd.DataFrame(sim_matrix, columns=vocab_list, index=vocab_list)
+
+    pd.set_option('mode.use_inf_as_na', True)
+
+    font_path = 'gulim.ttc'
+    font_name = fm.FontProperties(fname=font_path).get_name()
+    plt.rcParams['font.family'] = font_name
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df_sim, annot=True, fmt=".2f", cmap="YlGnBu", square=True)
+    plt.title("빈출 단어 간 연관성 분석")
+    plt.show()
+
+    return df_tfidf# df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
