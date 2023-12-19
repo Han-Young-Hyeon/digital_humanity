@@ -1,6 +1,6 @@
-###########################
-####### 한국고전DB ########
-###########################
+###################################
+####### 한국고전DB 한문버전 ########
+###################################
 
 import requests
 import pandas as pd
@@ -20,35 +20,19 @@ font_path = 'gulim.ttc'
 font_name = fm.FontProperties(fname=font_path).get_name()
 plt.rcParams['font.family'] = font_name
 
-# click 값에 따라 데이터 소스 리스트를 만들고 전체 데이터를 가져오는 함수
-def total_data(keyword, 고전번역서_ck, 고전원문_ck, 한국문집총간_ck, 한국고전총간_ck,
-                 조선왕조실록_ck, 신역_조선왕조실록_ck, 승정원일기_ck, 일성록_ck, 해제_ck) :
-    list_total = []
-    if 고전번역서_ck == 1 :
-        list_total.append('BT_AA')
-    elif 고전원문_ck == 1 :
-        list_total.append('GO_AA')
+# click 값에 따라 전체 데이터를 가져오는 함수
+def total_data(keyword, 고전원문_ck, 한국문집총간_ck, 한국고전총간_ck) :
+    book = 0
+    if 고전원문_ck == 1 :
+        book = 'GO_AA'
     elif 한국문집총간_ck == 1 : 
-        list_total.append('MO_AA')
+        book = 'MO_AA'
     elif 한국고전총간_ck == 1 :
-        list_total.append('KP_AA')
-    elif 조선왕조실록_ck == 1 :
-        list_total.append('JT_AA')
-    elif 신역_조선왕조실록_ck == 1 :
-        list_total.append('JR_AA')
-    elif 승정원일기_ck == 1 :
-        list_total.append('ST_AA')
-    elif 일성록_ck == 1 :
-        list_total.append('IT_AA')
-    elif 해제_ck == 1 : 
-        list_total.append('BT_HJ')
+        book = 'KP_AA'
 
-    total_data = pd.DataFrame()
-    total_data_with_url = pd.DataFrame()
-    for i in list_total :
-        df = korean_search(keyword = keyword, secld = i)
-        total_data = pd.concat([total_data, df[0]], axis=0)
-        total_data_with_url = pd.concat([total_data_with_url, df[1]], axis=0)
+    df = korean_search(keyword = keyword, secld = book)
+    total_data = df[0]
+    total_data_with_url = df[1]
 
     return total_data, total_data_with_url # total_data_with_url UI 상에 들어갈 데이터 프레임
 
@@ -76,16 +60,18 @@ def korean_search(keyword, secld, start = 0, rows = 1000) :
                 field[row.attrib['name']] = row.text
             row_list.append(field)
 
-    df_raw = pd.DataFrame(row_list)
+    df = pd.DataFrame(row_list)
 
-    df_raw.rename(columns = {"검색필드" : "기록", "DCI_s" : "URL"}, inplace = True)
+    df.rename(columns = {"검색필드" : "기록", "DCI_s" : "URL"}, inplace = True)
 
-    df = df_raw[['서명','기록', '간행년', '저자', '저자생년', '저자몰년']]
+    df['Sentence Raw'] = df['기록'].map(lambda x:[e for e in x.split('。') if '</em>' in e])
+    df['Sentence Raw'] = df['Sentence Raw'].map(lambda x: [re.sub(r'<[^>]+>', '', e) for e in x])
 
-    df_datas = df_raw[['서명', '기록', '간행년', '저자', 'URL']]
+    df_datas = df[['서명', 'Sentence Raw', '간행년', 'URL']]
+    df_datas.rename({'Sentence Raw' : '기록'}, inplace=True)
 
     for i in range(len(df_datas)):
-        url = "https://db.itkc.or.kr/dir/item?itemId=JT#dir/node?dataId=" + df_datas['URL'][i][0:27]
+        url = "https://db.itkc.or.kr/dir/item?itemId=JT#dir/node?dataId=" + str(df_datas['URL'][i])[0:27]
         df_datas['URL'][i] = url
 
     return df, df_datas
@@ -114,12 +100,7 @@ def get_sentiment_score(text):
         return None
 
 # 시대에 따른 키워드에 대한 감성 변화 그래프를 제시하는 함수
-def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 total_data를 통해 만들어진 것 중 두번째 데이터 프레임 사용 (ex. data[1])
-    df['저자생년'] = df['저자생년'].astype(int)
-    df['저자몰년'] = df['저자몰년'].astype(int)
-
-    df.loc[df['간행년'] == '미상', '간행년'] = (df['저자생년'] + df['저자몰년']) / 2
-
+def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 total_data를 통해 만들어진 것 중 첫번째 데이터 프레임 사용 (ex. data[0])
     df = df[df['간행년'].str.contains('[가-힣]') != 1]
 
     df.dropna(subset=['간행년'], inplace=True)
@@ -278,6 +259,14 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 total_data를 �
 ### 워드 클라우드 생성 ###
 from wordcloud import WordCloud
 
+def tokenize_wordcloud(sentence,allow_pos=[]):
+  s = lzh(sentence)
+  if allow_pos !=[]:
+    res = [t.form for t in s if t.upos in allow_pos]
+  else:
+    res = [t.form for t in s]
+  return res
+
 def word_cloud(df) : # total data에서 만들어진 것 중 첫번째 데이터프레임이 df
     df['token_2'] = df['기록'].progress_map(lambda x:tokenize_wordcloud(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
 
@@ -295,7 +284,7 @@ def word_cloud(df) : # total data에서 만들어진 것 중 첫번째 데이터
 
 ### 연관어 및 네트워크 분석에 필요한 함수 : 신경 쓰지 않으셔도 됩니다. ###
 def build_doc_term_mat(doc_list):
-    vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
+    vectorizer = CountVectorizer(tokenizer=str.split)
     dt_mat = vectorizer.fit_transform(doc_list)
     vocab = vectorizer.get_feature_names()
     return dt_mat, vocab
@@ -401,7 +390,7 @@ def cosine_relate(df1, df2) : ### 여기 들어갈 데이터프레임은 각각 
     plt.title("빈출 단어 간 연관성 분석")
     plt.show()
 
-    return df_tfidf, co_matrix_raw, token_tag_list # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
+    return df_tfidf, co_matrix_raw, token_tag_list
 
 ### 네트워크 분석 ###
 def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값입니다.
@@ -521,4 +510,4 @@ def text_correlate(df) : ## text_frequently의 함숫값
     plt.title("빈출 단어 간 연관성 분석")
     plt.show()
 
-    return df_tfidf# df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
+    return df_tfidf # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
