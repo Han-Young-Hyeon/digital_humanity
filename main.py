@@ -442,7 +442,7 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
 
     fig2.update_layout(
         title={
-            'text': "정도 중심성",
+            'text': "연결 중심성",
             'y':0.9,
             'x':0.5,
             'xanchor': 'center',
@@ -457,13 +457,13 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
 
     fig3.update_layout(
         title={
-            'text': "관계 중심성",
+            'text': "매개 중심성",
             'y':0.9,
             'x':0.5,
             'xanchor': 'center',
             'yanchor': 'top'
         },
-        xaxis_title='단어 2',
+        xaxis_title='단어',
         yaxis_title='중심도',
         legend_title='Legend'
     )
@@ -471,3 +471,13 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
     fig1.show()
     fig2.show()
     fig3.show()
+
+
+###### 사용자 입력 텍스트 단순 분석 ######
+def text_frequently(text) :
+    df = pd.DataFrame({"기록" : text})
+    frequency_analysis(df)
+    return df ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+
+def text_correlate() :
+    return "거의 완성"
