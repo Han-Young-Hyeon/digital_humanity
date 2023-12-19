@@ -1,3 +1,7 @@
+###########################
+####### 한국고전DB ########
+###########################
+
 import requests
 import pandas as pd
 import requests
@@ -8,10 +12,6 @@ import udkanbun
 import re
 
 lzh=udkanbun.load()
-
-###########################
-####### 한국고전DB ########
-###########################
 
 # click 값에 따라 자료 리스트를 만드는 함수
 def extract_list(고전번역서_ck, 고전원문_ck, 한국문집총간_ck, 한국고전총간_ck,
@@ -160,7 +160,7 @@ def gpt_supporter(text):
     text = response.choices[0].message.content.strip()
     return text
 
-### 빈도 분석 / 네트워크 분석 / 연관어 분석 ###
+###
 from tqdm import tqdm
 from collections import Counter
 import itertools
@@ -184,14 +184,15 @@ import udkanbun
 lzh=udkanbun.load()
 tqdm.pandas()
 
+### 빈도분석 : 그래프 생성 ###
 # 신경 안 써도 되는 함수 : 형태소에 따른 토큰화 함수
 def tokenize(sentence,allow_pos=[]):
-    try:
+    try :
         s = lzh(sentence)
-        if allow_pos != []:
-            res = [t.form for t in s if t.upos in allow_pos]
+        if allow_pos !=[]:
+            res = [t.form+'/'+t.upos.lower() for t in s if t.upos in allow_pos]
         else:
-            res = [t.form for t in s]
+            res = [t.form+'/'+t.upos.lower() for t in s]
         return res
     except AttributeError as e:
         print(f"Error processing sentence: {sentence}. Error: {e}")
@@ -255,8 +256,12 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 korean_search를
     fig1.show()
     fig2.show()
 
-    return frequency
+    return frequency, df ## 첫번째 함수는 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
 
+
+
+
+###### 아래는 미완성
 ### 연관어 분석 ###
 def build_doc_term_mat(doc_list):
     vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
