@@ -13,8 +13,15 @@ import re
 
 lzh=udkanbun.load()
 
-# click 값에 따라 자료 리스트를 만드는 함수
-def extract_list(고전번역서_ck, 고전원문_ck, 한국문집총간_ck, 한국고전총간_ck,
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+font_path = 'C:/Windows/Fonts/gulim.ttc'
+font_name = fm.FontProperties(fname=font_path).get_name()
+plt.rcParams['font.family'] = font_name
+
+# click 값에 따라 데이터 소스 리스트를 만들고 전체 데이터를 가져오는 함수
+def total_data(keyword, 고전번역서_ck, 고전원문_ck, 한국문집총간_ck, 한국고전총간_ck,
                  조선왕조실록_ck, 신역_조선왕조실록_ck, 승정원일기_ck, 일성록_ck, 해제_ck) :
     list_total = []
     if 고전번역서_ck == 1 :
@@ -36,7 +43,14 @@ def extract_list(고전번역서_ck, 고전원문_ck, 한국문집총간_ck, 한
     elif 해제_ck == 1 : 
         list_total.append('BT_HJ')
 
-    return list_total
+    total_data = pd.DataFrame()
+    total_data_with_url = pd.DataFrame()
+    for i in list_total :
+        df = korean_search(keyword = keyword, secld = i)
+        total_data = pd.concat([total_data, df[0]], axis=0)
+        total_data_with_url = pd.concat([total_data_with_url, df[1]], axis=0)
+
+    return total_data, total_data_with_url
 
 #### Raw 데이터 만들기 ####
 def korean_search(keyword, secld, start = 0, rows = 1000) :
@@ -74,8 +88,7 @@ def korean_search(keyword, secld, start = 0, rows = 1000) :
         url = "https://db.itkc.or.kr/dir/item?itemId=JT#dir/node?dataId=" + df_datas['URL'][i][0:27]
         df_datas['URL'][i] = url
 
-    return df, df_datas ### URL이 포함된 데이터프레임은 df_datas 입니다.
-
+    return df, df_datas
 
 ### 시계열 감성 분석 : 시대에 따른 키워드에 대한 감성 분석 ###
 from datetime import datetime
@@ -100,8 +113,8 @@ def get_sentiment_score(text):
         print(f"Error processing text: {text}. Error: {e}")
         return None
 
-# 시대에 따른 키워드에 대한 감성 변화 그래프를 제시하는 함수 : 문장 길이 때문에 일부 누락이 생기는 것 존재 주의
-def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 korean_search를 통해 만들어진 것 중 두번째 데이터 프레임 사용 (ex. data[1])
+# 시대에 따른 키워드에 대한 감성 변화 그래프를 제시하는 함수
+def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 total_data를 통해 만들어진 것 중 두번째 데이터 프레임 사용 (ex. data[1])
     df['저자생년'] = df['저자생년'].astype(int)
     df['저자몰년'] = df['저자몰년'].astype(int)
 
@@ -200,7 +213,7 @@ def tokenize(sentence,allow_pos=[]):
 
 import plotly.graph_objects as go
 
-def frequency_analysis(df) : # 여기 데이터 프레임에는 korean_search를 통해 만들어진 데이터 프레임 중 첫번째를 사용 (ex. data[0])
+def frequency_analysis(df) : # 여기 데이터 프레임에는 total_data를 통해 만들어진 데이터 프레임 중 첫번째를 사용 (ex. data[0])
     df['token'] = df['기록'].progress_map(lambda x:tokenize(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
     
     cnt = Counter(list(itertools.chain(*df['token'].tolist())))
@@ -215,7 +228,11 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 korean_search를
 
     fd_df=fd_df.sort_values('빈도2', ascending = False)
     fd_df.reset_index(drop = True, inplace = True)
-    fd_df = fd_df.head(10)
+
+    if len(fd_df) > 10 :
+        fd_df = fd_df.head(10)
+    else :
+        fd_df = fd_df
 
     frequency = pd.concat([frequency, fd_df], axis=1)
 
@@ -256,13 +273,9 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 korean_search를
     fig1.show()
     fig2.show()
 
-    return frequency, df ## 첫번째 함수는 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
+    return frequency, df ## 첫번째 데이터프레임은 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
 
-
-
-
-###### 아래는 미완성
-### 연관어 분석 ###
+### 연관어 및 네트워크 분석에 필요한 함수 : 신경 쓰지 않으셔도 됩니다. ###
 def build_doc_term_mat(doc_list):
     vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
     dt_mat = vectorizer.fit_transform(doc_list)
@@ -288,7 +301,6 @@ def get_sorted_word_sims(sim_mat, vocab):
     mat_to_list = sorted(sims, key=itemgetter(2), reverse=True)
     return mat_to_list
 
-### 네트워크 분석 ###
 def build_word_sim_network(mat_to_list, minimum_span=False):
     G = nx.Graph()
     NUM_MAX_WORDS = 30
@@ -305,11 +317,139 @@ def draw_network(G):
 
     nx.draw_networkx(G,
         pos=nx.kamada_kawai_layout(G),
-        node_size=500,
+        node_size=1500,
         node_color="blue",
         font_color="white",
-        font_family='NanumBarunGothic',
+        font_family='gulim',
         with_labels=True,
-        font_size=5,
+        font_size=10,
         width=width)
     plt.axis("off")
+
+### 연관어 분석 ###
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+import seaborn as sns
+
+def cosine_relate(df1, df2) : ### 여기 들어갈 데이터프레임은 각각 frequency_analysis으로부터 나온 첫번째 및 두번째 데이터프레임
+    separated_list = []
+    for item in df1['단어 2']:
+        separated_list.extend(item.split(', '))
+
+    separated_list =  list(set(separated_list))
+
+    token_tag_list = df2['token'].map(lambda x: ' '.join(x)).tolist()
+
+    vect = CountVectorizer(tokenizer=str.split)
+    document_term_matrix = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
+
+    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names())
+
+    vect = TfidfVectorizer(tokenizer=str.split)
+    tfvect = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
+
+    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names())
+
+    tf = tf[separated_list]
+    tfidf_df = tfidf_df[separated_list]
+
+    tfidf=[]
+    for col in tfidf_df.columns :
+        tfidf.append(tfidf_df[col].sum())
+
+    df_tfidf=pd.DataFrame(list(zip(tfidf_df.columns,tfidf)), columns=['words', 'tfidf_score'])
+    df_tfidf=df_tfidf.sort_values('tfidf_score', ascending=False)
+    df_tfidf.reset_index(drop=True, inplace=True)
+
+    dt_matrix, vocab_list= build_doc_term_mat(token_tag_list)
+    co_matrix_raw = build_word_cooc_mat(dt_matrix)
+
+    df_co = pd.DataFrame(co_matrix_raw, columns=vocab_list, index=vocab_list)
+    df_co = df_co.loc[separated_list, separated_list]
+    co_matrix = np.matrix(df_co)
+
+    sim_matrix = get_word_sim_mat(co_matrix)
+    df_sim = pd.DataFrame(sim_matrix, columns=separated_list, index=separated_list)
+
+    pd.set_option('mode.use_inf_as_na', True)
+
+    font_path = 'C:/Windows/Fonts/gulim.ttc'
+    font_name = fm.FontProperties(fname=font_path).get_name()
+    plt.rcParams['font.family'] = font_name
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df_sim, annot=True, fmt=".2f", cmap="YlGnBu", square=True)
+    plt.title("빈출 단어 간 연관성 분석")
+    plt.show()
+
+    return df_tfidf, co_matrix_raw, token_tag_list # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
+
+### 네트워크 분석 ###
+def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값입니다.
+    token_tag_list = correldata[2]
+    dt_matrix, vocab_list= build_doc_term_mat(token_tag_list)
+    co_matrix = build_word_cooc_mat(dt_matrix)
+
+    matrix_to_list = get_sorted_word_sims(co_matrix, vocab_list)
+    G = build_word_sim_network(matrix_to_list)
+    draw_network(G)
+
+    close_centrality = nx.closeness_centrality(G)
+    deg_centrality = nx.degree_centrality(G)
+    bet_centrality = nx.betweenness_centrality(G, normalized = True, endpoints = False)
+
+    close_df= pd.DataFrame(close_centrality.items(), columns=['token1', 'close_centrality'])
+    deg_df = pd.DataFrame(deg_centrality.items(), columns=['token2', 'degree_centrality'])
+    bet_df=pd.DataFrame(bet_centrality.items(), columns=['token3', 'between_centrality'])
+
+    cent_df = pd.concat([close_df, deg_df, bet_df], axis=1)
+
+    fig1 = go.Figure(data=[go.Bar(x=cent_df['token1'], y=cent_df['close_centrality'])])
+
+    fig1.update_layout(
+        title={
+            'text': "근접 중심성 지표",
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        xaxis_title='단어',
+        yaxis_title='중심도',
+        legend_title='Legend'
+    )
+
+    fig2 = go.Figure(data=[go.Bar(x=cent_df['token2'], y=cent_df['degree_centrality'])])
+
+    fig2.update_layout(
+        title={
+            'text': "정도 중심성",
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        xaxis_title='단어',
+        yaxis_title='중심도',
+        legend_title='Legend'
+    )
+
+    fig3 = go.Figure(data=[go.Bar(x=cent_df['token3'], y=cent_df['between_centrality'])])
+
+    fig3.update_layout(
+        title={
+            'text': "관계 중심성",
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        xaxis_title='단어 2',
+        yaxis_title='중심도',
+        legend_title='Legend'
+    )
+
+    fig1.show()
+    fig2.show()
+    fig3.show()
