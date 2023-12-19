@@ -1,13 +1,11 @@
 import requests
 import pandas as pd
-import re
-import time
 import requests
 import xml.etree.ElementTree as ET
 from tqdm import tqdm
 import numpy as np
-import re
 import udkanbun
+import re
 
 lzh=udkanbun.load()
 
@@ -76,7 +74,7 @@ def korean_search(keyword, secld, start = 0, rows = 1000) :
         url = "https://db.itkc.or.kr/dir/item?itemId=JT#dir/node?dataId=" + df_datas['URL'][i][0:27]
         df_datas['URL'][i] = url
 
-    return df, df_datas
+    return df, df_datas ### URL이 포함된 데이터프레임은 df_datas 입니다.
 
 
 ### 시계열 감성 분석 : 시대에 따른 키워드에 대한 감성 분석 ###
@@ -117,9 +115,12 @@ def time_series_data(df) :
 
     df = df.sort_values('간행년')
     
-    df['sentiment'] = df['기록'].apply(get_sentiment_score)
+    df['sentence'] = df['기록'].map(lambda x:[e for e in x.split('。') if '</em>' in e])
+    
+    df['sentence'] = df['sentence'].map(lambda x:[re.sub('\<em class\=\"hl1\"\>(.+)\<\/em\>','\g<1>',e) for e in x])
+
+    df['sentiment'] = df['sentence'].apply(get_sentiment_score)
     df['간행년'] = df['간행년'].apply(convert_year_to_datetime)
-    df = df[(df['간행년'] < 2000)&(df['간행년'] > 300)]
 
     df_for_sent = df[['간행년', 'sentiment']].groupby("간행년")
 
@@ -141,10 +142,12 @@ def time_series_data(df) :
 
     fig.show()
 
-### GPT 함수 : text에 질문을 넣을 경우 그에 따른 결과 출력
+### GPT 함수 : text에 질문을 넣을 경우 그에 따른 결과 출력 ###
 import openai
 
 def gpt_supporter(text):
+    openai.api_key = "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"
+
     system_message_01 = text + "한글로 답변해주세요."
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -156,3 +159,149 @@ def gpt_supporter(text):
 
     text = response.choices[0].message.content.strip()
     return text
+
+### 빈도 분석 / 네트워크 분석 / 연관어 분석 ###
+from tqdm import tqdm
+tqdm.pandas()
+from collections import Counter
+import itertools
+
+import nltk
+from nltk import collocations
+
+from gensim.models import Word2Vec
+from sklearn.manifold import TSNE
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from scipy.spatial.distance import pdist
+from scipy.spatial.distance import squareform
+from itertools import combinations
+from operator import itemgetter
+import matplotlib.pyplot as plt
+import networkx as nx
+import udkanbun
+lzh=udkanbun.load()
+
+# 신경 안 써도 되는 함수
+def tokenize(sentence,allow_pos=[]):
+    try:
+        s = lzh(sentence)
+        if allow_pos != []:
+            res = [t.form for t in s if t.upos in allow_pos]
+        else:
+            res = [t.form for t in s]
+        return res
+    except AttributeError as e:
+        print(f"Error processing sentence: {sentence}. Error: {e}")
+        return []
+    
+def build_doc_term_mat(doc_list):
+    vectorizer = CountVectorizer(tokenizer=str.split, max_features=10)
+    dt_mat = vectorizer.fit_transform(doc_list)
+    vocab = vectorizer.get_feature_names()
+    return dt_mat, vocab
+
+def build_word_cooc_mat(dt_mat):
+    co_mat = dt_mat.T * dt_mat
+    co_mat.setdiag(0)
+    return co_mat.toarray()
+
+def get_word_sim_mat(co_mat):
+    sim_mat = pdist(co_mat, metric='cosine')
+    sim_mat = squareform(sim_mat)
+    return sim_mat
+
+def get_sorted_word_sims(sim_mat, vocab):
+    sims = []
+    for i, j in combinations(range(len(vocab)), 2):
+        if sim_mat[i, j] == 0:
+            continue
+        sims.append((vocab[i], vocab[j], sim_mat[i, j]))
+    mat_to_list = sorted(sims, key=itemgetter(2), reverse=True)
+    return mat_to_list
+
+def build_word_sim_network(mat_to_list, minimum_span=False):
+    G = nx.Graph()
+    NUM_MAX_WORDS = 30
+    for word1, word2, sim in mat_to_list[:NUM_MAX_WORDS]:
+        G.add_edge(word1, word2, weight=sim)
+    if minimum_span:
+        return nx.minimum_spanning_tree(G)
+    else:
+        return G
+
+def draw_network(G):
+    weights = nx.get_edge_attributes(G,'weight').values()
+    width = [weight / max(weights)*3 for weight in weights]
+
+    nx.draw_networkx(G,
+        pos=nx.kamada_kawai_layout(G),
+        node_size=500,
+        node_color="blue",
+        font_color="white",
+        font_family='NanumBarunGothic',
+        with_labels=True,
+        font_size=5,
+        width=width)
+    plt.axis("off")
+
+import plotly.graph_objects as go
+
+def frequency_analysis(df) :
+    df['token'] = df['기록'].progress_map(lambda x:tokenize(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
+    
+    cnt = Counter(list(itertools.chain(*df['token'].tolist())))
+    frequency = pd.DataFrame(cnt.most_common(10))
+    frequency.rename(columns={0 : "단어1", 1 : "빈도1"}, inplace=True)
+    
+    token_list = list(itertools.chain(*df['token'].tolist()))
+    bgs = nltk.bigrams(token_list)
+    fdist= nltk.FreqDist(bgs)
+    fd= fdist.items()
+    fd_df = pd.DataFrame(fd, columns =['단어2', '빈도2'])
+
+    fd_df=fd_df.sort_values('빈도2', ascending = False)
+    fd_df.reset_index(drop = True, inplace = True)
+    fd_df = fd_df.head(10)
+
+    frequency = pd.concat([frequency, fd_df], axis=1)
+
+    frequency.index = frequency.index + 1
+
+    frequency['단어 2'] = frequency['단어2'].apply(lambda x: ', '.join(x) if isinstance(x, tuple) else x)
+
+    fig1 = go.Figure(data=[go.Bar(x=frequency['단어1'], y=frequency['빈도1'])])
+
+    fig1.update_layout(
+        title={
+            'text': "키워드 포함 맥락 내 단어 출현 빈도 1",
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        xaxis_title='단어 1',
+        yaxis_title='빈도',
+        legend_title='Legend'
+    )
+
+    fig2 = go.Figure(data=[go.Bar(x=frequency['단어 2'], y=frequency['빈도2'])])
+
+    fig2.update_layout(
+        title={
+            'text': "키워드 포함 맥락 내 단어 출현 빈도 2",
+            'y':0.9,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        xaxis_title='단어 2',
+        yaxis_title='빈도',
+        legend_title='Legend'
+    )
+
+    fig1.show()
+    fig2.show()
+
+    return frequency
