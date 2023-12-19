@@ -464,7 +464,7 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
 
 ###### 사용자 입력 텍스트 단순 분석 ######
 def text_frequently(text) :
-    df = pd.DataFrame({"기록" : text})
+    df = pd.DataFrame({"기록" : [text]})
     df_cr = frequency_analysis(df)
     word_cloud(df)
     return df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
