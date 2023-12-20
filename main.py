@@ -874,8 +874,8 @@ def text_frequently_kr(text) :
     word_cloud_kr(df)
     return df_cr ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
-### 아직 오류가 나는 부분입니다.
-# def text_correlate_kr(frequency_text) : ## text_frequently의 함숫값
-#     df_tfidf = cosine_relate_kr(frequency_text[0], frequency_text[1])
+### 글자수가 적으면 아직 오류가 나는 부분입니다.
+def text_correlate_kr(frequency_text) : ## text_frequently의 함숫값
+    df_tfidf = cosine_relate_kr(frequency_text[0], frequency_text[1])
 
-#     return df_tfidf[0] # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
+    return df_tfidf[0] # df_tfidf는 문헌에서 단어의 중요도를 나타내는 지표. Correlation heatmap 밑에 Data Frame 형태로 제시할 수 있을 듯합니다.
