@@ -465,8 +465,8 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
 ###### 사용자 입력 텍스트 단순 분석 ######
 def text_frequently(text) :
     df = pd.DataFrame({"기록" : [text]})
-    df_cr = frequency_analysis(df)
     word_cloud(df)
+    df_cr = frequency_analysis(df)
     return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
 def text_correlate(frequency_text) : ## text_frequently의 함숫값
@@ -714,12 +714,16 @@ def frequency_analysis_kr(df) : # 여기 데이터 프레임에는 total_data를
 from wordcloud import WordCloud
 
 def tokenize_wordcloud_kr(sentence, allow_pos=[]):
-    tokens = komoran.pos(sentence)
-    if allow_pos != []:
-        res = [token[0] for token in tokens if token[1] in allow_pos]
-    else:
-        res = [token[0] for token in tokens]
-    return res
+    try :
+        tokens = komoran.pos(sentence)
+        if allow_pos != []:
+            res = [token[0] for token in tokens if token[1] in allow_pos]
+        else:
+            res = [token[0] for token in tokens]
+        return res
+    except Exception as e:
+        print(f"Error processing sentence: {sentence}. Error: {e}")
+        return []
 
 def word_cloud_kr(df) : # total data에서 만들어진 것 중 첫번째 데이터프레임이 df
     df['token'] = df['기록'].progress_apply(lambda x: tokenize_wordcloud_kr(x, ['NNG', 'NNP', 'VV', 'VA', 'MAG', 'MAJ']))
@@ -870,11 +874,10 @@ def network_analysis_kr(correldata) : ## correldata는 cosine_relate의 함숫�
 ###### 사용자 입력 텍스트 단순 분석 ######
 def text_frequently_kr(text) :
     df = pd.DataFrame({"기록" : [text]})
-    df_cr = frequency_analysis_kr(df)
     word_cloud_kr(df)
-    return df_cr ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    df_cr = frequency_analysis_kr(df)
+    return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
-### 글자수가 적으면 아직 오류가 나는 부분입니다.
 def text_correlate_kr(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate_kr(frequency_text[0], frequency_text[1])
 
