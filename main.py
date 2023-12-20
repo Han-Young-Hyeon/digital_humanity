@@ -467,7 +467,7 @@ def text_frequently(text) :
     df = pd.DataFrame({"기록" : [text]})
     word_cloud(df)
     df_cr = frequency_analysis(df)
-    return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    return df_cr[0], df_cr[1] ## 이건 신경 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
 def text_correlate(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate(frequency_text[0], frequency_text[1])
@@ -506,7 +506,7 @@ def total_data_kr(keyword, 고전번역서_ck, 조선왕조실록_ck, 신역_조
     elif 일성록_ck == 1 :
         book = 'IT_AA'
     elif 고전번역서_ck == 1 :
-        book = 'GO_AB'
+        book = 'BT_AA'
 
     df = korean_search_kr(keyword = keyword, secld = book)
     total_data = df[0]
@@ -876,7 +876,7 @@ def text_frequently_kr(text) :
     df = pd.DataFrame({"기록" : [text]})
     word_cloud_kr(df)
     df_cr = frequency_analysis_kr(df)
-    return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    return df_cr[0], df_cr[1] ## 이건 신경 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
 def text_correlate_kr(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate_kr(frequency_text[0], frequency_text[1])
