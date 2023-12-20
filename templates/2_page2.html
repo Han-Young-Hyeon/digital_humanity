@@ -1,0 +1,50 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Humanity</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
+    <div class="section section1">
+        <div class="navbar"  id="frequency_analysis">
+            <div class="box_wrapper"><span><br>바로가기<br><br></span></div><br>
+            <a href="#" onclick="scrollToSection('frequency_analysis')" style="color: black;">빈도 분석</a><br>
+            <a href="#" onclick="scrollToSection('network_analysis')">네트워크 분석</a><br>
+            <a href="#" onclick="scrollToSection('association_analysis')">연관어 분석</a><br>
+            <a href="#" onclick="scrollToSection('emotion_analysis')">시계열 기반 감정 분석</a><br>
+        </div>
+    </div>
+    <div class="section section2">
+        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <div class="boxes_column">
+            <div class="box_class_column" id="user_type">
+                한국고전종합 DB 데이터 분석
+            </div>
+            <div class="box_class_column"  id="frequency_analysis">
+                <div class="box_wrapper"><h3>빈도 분석</h3></div>
+                <br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="box_class_column"  id="network_analysis">
+                <div class="box_wrapper"><h3>네트워크 분석</h3></div>
+                <br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="box_class_column" id="association_analysis">
+                <div class="box_wrapper"><h3>연관어 분석</h3></div>
+                <br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="box_class_column" id="emotion_analysis">
+                <div class="box_wrapper"><h3>시계열 기반 감정 분석</h3></div>
+                <br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+        </div>        
+    </div>
+    <div class="section section3">
+    </div>
+    <script src="/static/script.js"></script> 
+</body>
+</html>

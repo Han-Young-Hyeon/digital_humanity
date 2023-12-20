@@ -10,15 +10,28 @@
 </head>
 <body>
     <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
-    <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text>
-    <br>
-    <text style="font-size: 4rem;">데이터로 철학하다</text>
-    <br>
-    <div class="boxes">
-        <div id="box1" onclick="redirectToPage('page1.html')"></div>
-        <div id="box2" onclick="redirectToPage('page2.html')"></div>
-        <div id="box3" onclick="redirectToPage('page3.html')"></div>
+
+    <div class="section section1"></div>
+    <div class="section section2">
+        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <br>
+        <div class="boxes">
+            <div class="box_class" onclick="redirectToPage('1_page1.html')">
+                <br><img src="/assets/main_image1.png" class="box-image"><br>
+                <div class="box_wrapper"><span>디지털 인문학이란?</span></div>
+            </div>
+            <div class="box_class" onclick="redirectToPage('2_page1.html')">
+                <br><img src="/assets/main_image2.png" class="box-image"><br>
+                <div class="box_wrapper"><span>한국고전종합DB<br>데이터 분석</span></div>
+            </div>
+            <div class="box_class" onclick="redirectToPage('3_page1.html')">
+                <br><img src="/assets/main_image3.png" class="box-image"><br>
+                <div class="box_wrapper"><span>사용자 제공 텍스트<br>데이터 분석</span></div>
+            </div>
+        </div>
     </div>
+    <div class="section section3"></div>
     <br>
     <br>
     <br>
