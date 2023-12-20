@@ -10,6 +10,7 @@ from tqdm import tqdm
 import numpy as np
 import udkanbun
 import re
+pd.options.mode.chained_assignment = None
 
 lzh=udkanbun.load()
 
@@ -286,7 +287,7 @@ def word_cloud(df) : # total data에서 만들어진 것 중 첫번째 데이터
 def build_doc_term_mat(doc_list):
     vectorizer = CountVectorizer(tokenizer=str.split)
     dt_mat = vectorizer.fit_transform(doc_list)
-    vocab = vectorizer.get_feature_names()
+    vocab = vectorizer.get_feature_names_out()
     return dt_mat, vocab
 
 def build_word_cooc_mat(dt_mat):
@@ -351,12 +352,12 @@ def cosine_relate(df1, df2) : ### 여기 들어갈 데이터프레임은 각각 
     vect = CountVectorizer(tokenizer=str.split)
     document_term_matrix = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
 
-    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names())
+    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names_out())
 
     vect = TfidfVectorizer(tokenizer=str.split)
     tfvect = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
 
-    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names())
+    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names_out())
 
     tf = tf[separated_list]
     tfidf_df = tfidf_df[separated_list]
@@ -467,7 +468,7 @@ def text_frequently(text) :
     df = pd.DataFrame({"기록" : [text]})
     word_cloud(df)
     df_cr = frequency_analysis(df)
-    return df_cr[0], df_cr[1] ## 이건 신경 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
 def text_correlate(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate(frequency_text[0], frequency_text[1])
@@ -489,6 +490,7 @@ import re
 
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+pd.options.mode.chained_assignment = None
 
 font_path = 'gulim.ttc'
 font_name = fm.FontProperties(fname=font_path).get_name()
@@ -760,12 +762,12 @@ def cosine_relate_kr(df1, df2) : ### 여기 들어갈 데이터프레임은 각�
     vect = CountVectorizer(tokenizer=str.split)
     document_term_matrix = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
 
-    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names())
+    tf = pd.DataFrame(document_term_matrix.toarray(), columns=vect.get_feature_names_out())
 
     vect = TfidfVectorizer(tokenizer=str.split)
     tfvect = vect.fit_transform(token_tag_list)  # 문서-단어 행렬
 
-    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names())
+    tfidf_df = pd.DataFrame(tfvect.toarray(), columns = vect.get_feature_names_out())
 
     tf = tf[separated_list]
     tfidf_df = tfidf_df[separated_list]
@@ -876,7 +878,7 @@ def text_frequently_kr(text) :
     df = pd.DataFrame({"기록" : [text]})
     word_cloud_kr(df)
     df_cr = frequency_analysis_kr(df)
-    return df_cr[0], df_cr[1] ## 이건 신경 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
+    return df_cr[0], df_cr[1] ## 이건 신청 안 쓰셔도 되고 text_frequently의 실행 결과로 나오는 차트가 해당 칸에 무사히 들어가기만 하면 됩니다.
 
 def text_correlate_kr(frequency_text) : ## text_frequently의 함숫값
     df_tfidf = cosine_relate_kr(frequency_text[0], frequency_text[1])
