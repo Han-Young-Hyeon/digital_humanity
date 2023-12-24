@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://your-font-file-host/inter.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function redirectToPage(page) {
+            window.location.href = '/' + page;
+        }
+    </script>
 </head>
 <body>
-    <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
-
+    <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="redirectToPage('index.html')" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
         <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
@@ -18,15 +21,15 @@
         <br>
         <div class="boxes">
             <div class="box_class" onclick="redirectToPage('1_page1.html')">
-                <br><img src="/assets/main_image1.png" class="box-image"><br>
+                <br><img src="{{ url_for('static', filename='assets/main_image1.png') }}" class="box-image"><br>
                 <div class="box_wrapper"><span>디지털 인문학이란?</span></div>
             </div>
             <div class="box_class" onclick="redirectToPage('2_page1.html')">
-                <br><img src="/assets/main_image2.png" class="box-image"><br>
+                <br><img src="{{ url_for('static', filename='assets/main_image2.png') }}" class="box-image"><br>
                 <div class="box_wrapper"><span>한국고전종합DB<br>데이터 분석</span></div>
             </div>
             <div class="box_class" onclick="redirectToPage('3_page1.html')">
-                <br><img src="/assets/main_image3.png" class="box-image"><br>
+                <br><img src="{{ url_for('static', filename='assets/main_image3.png') }}" class="box-image"><br>
                 <div class="box_wrapper"><span>사용자 제공 텍스트<br>데이터 분석</span></div>
             </div>
         </div>
@@ -35,6 +38,5 @@
     <br>
     <br>
     <br>
-    <script src="/static/script.js"></script> 
 </body>
 </html>

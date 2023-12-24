@@ -1,14 +1,14 @@
-<!-- templates/index.html -->
+<!-- templates/1_page1.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
+    <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
         <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
@@ -20,14 +20,13 @@
                 <br><br>
                 디지털인문학 입문(김 현, 임영상, 김바로). HUEBOOKS  
             </div>
-            <br><img src="/assets/1_image1.png" class="firstpage_image"><br>
-            <div class="box_class_column" onclick="redirectToPage('2_page1.html')">
+            <br><img src="{{ url_for('static', filename='assets/1_image1.png') }}" class="firstpage_image"><br>
+            <div class="box_class_column">
                 <div class="box_wrapper"><span>데이터로 철학을 한다는 것은 어떤 의미인가요?</span></div>
                 <br>
             </div>
         </div>        
     </div>
     <div class="section section3"></div>
-    <script src="/static/script.js"></script> 
 </body>
 </html>

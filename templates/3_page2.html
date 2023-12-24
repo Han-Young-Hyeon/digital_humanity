@@ -1,14 +1,14 @@
-<!-- templates/index.html -->
+<!-- templates/3_page2.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
+    <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1">
     </div>
     <div class="section section2">
@@ -19,20 +19,19 @@
                 사용자 제공 데이터 분석
             </div>
             <div class="box_class_column">
-                <div class="box_wrapper"><span>입력한 텍스트</span></div>
+                <div class="box_wrapper"><h4>입력한 텍스트</h4></span></div>
                 <br><br><br><br><br><br>
             </div>
             <div class="box_class_column">
-                <div class="box_wrapper"><span>빈도 분석</span></div>
+                <div class="box_wrapper"><h4>빈도 분석</h4></div>
                 <br><br><br><br><br><br>
             </div>
             <div class="box_class_column">
-                <div class="box_wrapper"><span>연관어 분석</span></div>
+                <div class="box_wrapper"><h4>연관어 분석</h4></div>
                 <br><br><br><br><br><br>
             </div>
         </div>        
     </div>
     <div class="section section3"></div>
-    <script src="/static/script.js"></script> 
 </body>
 </html>

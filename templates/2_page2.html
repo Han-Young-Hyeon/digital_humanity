@@ -1,21 +1,30 @@
-<!-- templates/index.html -->
+<!-- templates/2_page2.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+        }
+    </script>
 </head>
 <body>
-    <img id="icon" src="/assets/home_button.png" onclick="redirectToPage('index.html')" alt="Icon">
+    <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1">
-        <div class="navbar"  id="frequency_analysis">
+        <div class="navbar">
             <div class="box_wrapper"><span><br>바로가기<br><br></span></div><br>
+            <a href="#" onclick="scrollToSection('keyword_list')" style="color: black;">키워드 List</a><br>
             <a href="#" onclick="scrollToSection('frequency_analysis')" style="color: black;">빈도 분석</a><br>
-            <a href="#" onclick="scrollToSection('network_analysis')">네트워크 분석</a><br>
-            <a href="#" onclick="scrollToSection('association_analysis')">연관어 분석</a><br>
-            <a href="#" onclick="scrollToSection('emotion_analysis')">시계열 기반 감정 분석</a><br>
+            <a href="#" onclick="scrollToSection('network_analysis')" style="color: black;">네트워크 분석</a><br>
+            <a href="#" onclick="scrollToSection('association_analysis')"  style="color: black;">연관어 분석</a><br>
+            <a href="#" onclick="scrollToSection('emotion_analysis')"  style="color: black;">시계열 기반 감정 분석</a><br>
         </div>
     </div>
     <div class="section section2">
@@ -25,26 +34,154 @@
             <div class="box_class_column" id="user_type">
                 한국고전종합 DB 데이터 분석
             </div>
+            <div class="box_class_column"  id="keyword_list">
+                <div class="box_wrapper"><h4>선택한 문헌 속에서 입력한 키워드가 포함된 문장 List</h4></div>
+                <br>
+                {{ result_df | safe}}
+                <br>
+            </div>
             <div class="box_class_column"  id="frequency_analysis">
-                <div class="box_wrapper"><h3>빈도 분석</h3></div>
-                <br><br><br><br><br><br><br><br><br><br><br><br>
+                <div class="box_wrapper"><h4>빈도 분석</h4></div>
+                <br>
+                <img src="data:image/png;base64,{{ wordcloud_image }}" alt="WordCloud Image" style="width:80%;">
+                <br>
+                <div id="frequency-graph1"></div>
+                <div id="frequency-graph2"></div>
+                <br>
             </div>
             <div class="box_class_column"  id="network_analysis">
-                <div class="box_wrapper"><h3>네트워크 분석</h3></div>
-                <br><br><br><br><br><br><br><br><br><br><br><br>
+                <div class="box_wrapper"><h4>네트워크 분석</h4></div>
+                <img src="data:image/png;base64,{{ network_image }}" alt="Network Graph"  style="width:80%;">
+                <div id="network-graph1"></div>
+                <div id="network-graph2"></div>
+                <div id="network-graph3"></div>
+                <br>
             </div>
             <div class="box_class_column" id="association_analysis">
-                <div class="box_wrapper"><h3>연관어 분석</h3></div>
-                <br><br><br><br><br><br><br><br><br><br><br><br>
+                <div class="box_wrapper"><h4>연관어 분석</h4></div>
+                <img src="data:image/png;base64,{{ heatmap_image }}" alt="Cosine Similarity Heatmap"  style="width:80%;">
+                <!-- 여기에 연관어 dataframe -->
+                <br>
             </div>
             <div class="box_class_column" id="emotion_analysis">
-                <div class="box_wrapper"><h3>시계열 기반 감정 분석</h3></div>
-                <br><br><br><br><br><br><br><br><br><br><br><br>
+                <div class="box_wrapper"><h4>시계열 기반 감정 분석</h4></div>
+                <div id="time-series-chart"></div>
+                <br>
             </div>
         </div>        
     </div>
     <div class="section section3">
     </div>
-    <script src="/static/script.js"></script> 
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script>
+        var frequency_data = {{ frequency_result.to_dict(orient='list')|tojson|safe }};
+
+        // 그래프 1
+        var trace1 = {
+            x: frequency_data['단어1'],
+            y: frequency_data['빈도1'],
+            type: 'bar',
+            name: '빈도 1'
+        };
+        
+        var layout1 = {
+            title: '키워드 포함 맥락 내 단어 출현 빈도 1',
+            xaxis: { title: '단어 1' },
+            yaxis: { title: '빈도' },
+            legend: { title: 'Legend' }
+        };
+        
+        Plotly.newPlot('frequency-graph1', [trace1], layout1);
+        
+        // 그래프 2
+        var trace2 = {
+            x: frequency_data['단어2'],
+            y: frequency_data['빈도2'],
+            type: 'bar',
+            name: '빈도 2'
+        };
+        
+        var layout2 = {
+            title: '키워드 포함 맥락 내 단어 출현 빈도 2',
+            xaxis: { title: '단어 2' },
+            yaxis: { title: '빈도' },
+            legend: { title: 'Legend' }
+        };
+        
+        Plotly.newPlot('frequency-graph2', [trace2], layout2);
+
+        var timeSeriesData = {{ time_series_data_result.to_dict(orient='list')|tojson|safe }};
+
+        var data = {
+            x: timeSeriesData['간행년'],
+            y: timeSeriesData['sentiment'],
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Sentiment Score'
+        };
+
+        var layout = {
+            title: '키워드에 대한 시간에 따른 평가',
+            xaxis: { title: '간행년' },
+            yaxis: { title: '키워드 평가 수치화' }
+        };
+
+        Plotly.newPlot('time-series-chart', [data], layout);
+
+        var network_data = {{ network_data.to_dict(orient='list') | tojson | safe }};
+
+        // Graph 1 (Closeness Centrality)
+        var trace1 = {
+            x: network_data['token1'],
+            y: network_data['close_centrality'],
+            type: 'bar',
+            name: 'Closeness Centrality'
+        };
+
+        var layout1 = {
+            title: '근접 중심성 지표',
+            xaxis: { title: '단어' },
+            yaxis: { title: '중심도' },
+            legend: { title: 'Legend' }
+        };
+
+        Plotly.newPlot('network-graph1', [trace1], layout1);
+
+        // Graph 2 (Degree Centrality)
+        var trace2 = {
+            x: network_data['token2'],
+            y: network_data['degree_centrality'],
+            type: 'bar',
+            name: 'Degree Centrality'
+        };
+
+        var layout2 = {
+            title: '연결 중심성',
+            xaxis: { title: '단어' },
+            yaxis: { title: '중심도' },
+            legend: { title: 'Legend' }
+        };
+
+        Plotly.newPlot('network-graph2', [trace2], layout2);
+
+        // Graph 3 (Betweenness Centrality)
+        var trace3 = {
+            x: network_data['token3'],
+            y: network_data['between_centrality'],
+            type: 'bar',
+            name: 'Betweenness Centrality'
+        };
+
+        var layout3 = {
+            title: '매개 중심성',
+            xaxis: { title: '단어' },
+            yaxis: { title: '중심도' },
+            legend: { title: 'Legend' }
+        };
+
+        Plotly.newPlot('network-graph3', [trace3], layout3);
+
+    </script>
 </body>
 </html>
