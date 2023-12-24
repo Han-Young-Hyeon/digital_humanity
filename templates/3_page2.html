@@ -6,32 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('.navbar a');
+            
+            links.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const sectionId = link.getAttribute('data-section');
+                    scrollToSection(sectionId);
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1">
+        <div class="navbar">
+            <div class="box_wrapper_for_top_rad"><span><br>바로가기<br><br></span></div><br>
+            <a href="#" onclick="scrollToSection('input_text')" style="color: black;">입력한 텍스트</a><br>
+            <a href="#" onclick="scrollToSection('user_frequency_analysis')" style="color: black;">빈도 분석</a><br>
+            <a href="#" onclick="scrollToSection('user_association_analysis')"  style="color: black;">연관어 분석</a><br>
+        </div>
     </div>
     <div class="section section2">
-        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <br><br>
+        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text class="project_name">데이터로 철학하다</text>
         <div class="boxes_column">
             <div class="box_class_column" id="user_type">
-                사용자 제공 데이터 분석
+                <br>
+                사용자 제공 데이터 분석<br>
+                <br>
             </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><h4>입력한 텍스트</h4></span></div>
-                <br><br><br><br><br><br>
+            <div class="box_class_column" data-section="input_text" id="input_text">
+                <div class="box_wrapper_for_top_rad"><h4>입력한 텍스트</h4></span></div>
+                {{TEXT}}
+                <br>
             </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><h4>빈도 분석</h4></div>
-                <br><br><br><br><br><br>
+            <div class="box_class_column" data-section="user_frequency_analysis" id="user_frequency_analysis">
+                <div class="box_wrapper_for_top_rad"><h4>빈도 분석</h4></div>
+                <br>
+                <img src="data:image/png;base64,{{ user_word_cloud }}" alt="User wordcloud"  style="width:80%;">
+                <div id="user_frequency_graph1"></div>
+                <div id="user_frequency_graph2"></div>
+                <br>
             </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><h4>연관어 분석</h4></div>
-                <br><br><br><br><br><br>
+            <div class="box_class_column" data-section="user_association_analysis" id="user_association_analysis">
+                <div class="box_wrapper_for_top_rad"><h4>연관어 분석</h4></div>
+                <img src="data:image/png;base64,{{ user_heatmap_image }}" alt="User Heatmap"  style="width:80%;">
+                <br><br>
+                {{ user_df_tfidf.to_html(classes="table table-bordered table-striped", render_links=True, index=False) | safe }}
+                <br>
             </div>
         </div>        
     </div>
     <div class="section section3"></div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        var user_dataframe1 = {{ user_df.to_dict(orient='list')|tojson|safe }};
+
+        var trace1 = {
+            x: user_dataframe1['단어1'],
+            y: user_dataframe1['빈도1'],
+            type: 'bar',
+            name: '빈도 1'
+        };
+
+        var layout1 = {
+            title: '키워드 포함 맥락 내 단어 출현 빈도 1',
+            xaxis: { title: '단어 1' },
+            yaxis: { title: '빈도' },
+            legend: { title: 'Legend' }
+        };
+
+        Plotly.newPlot('user_frequency_graph1', [trace1], layout1); // 빈도분석 그래프1
+
+        var trace2 = {
+            x: user_dataframe1['단어2'],
+            y: user_dataframe1['빈도2'],
+            type: 'bar',
+            name: '빈도 2'
+        };
+
+        var layout2 = {
+            title: '키워드 포함 맥락 내 단어 출현 빈도 2',
+            xaxis: { title: '단어 2' },
+            yaxis: { title: '빈도' },
+            legend: { title: 'Legend' }
+        };
+
+        Plotly.newPlot('user_frequency_graph2', [trace2], layout2); // 빈도분석 그래프2
+
+    </script>
 </body>
 </html>

@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <style>
         .selection {
             cursor: pointer;
         }
         .selected {
-            background-color: lightgray;
+            background-color: #ccc;
         }
     </style>
     <script>
@@ -28,84 +29,96 @@
                 });
             });
         });
-
     </script>
 </head>
 <body>
     <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
-        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text class="project_name">데이터로 철학하다</text>
         <div class="boxes_column">
             <div class="box_class_column" id="user_type">
-                한국고전종합DB 데이터 분석
+                <br>
+                한국고전종합DB 데이터 분석<br>
+                <br>
             </div>
-            <div class="box_class_column">
-                <form action="/2_page2.html" method="post">
-                <div class="box_wrapper"><span>분석하려는 문헌을 선택해주세요! (2023.12ver)</span></div>
-                <div class="for_sub_box">
-                    <div class="selection" data-id="selection1">
-                        <br><img src="{{ url_for('static', filename='assets/2_image1.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>고전원문<br>(한자)</span></div>
-                        <input type="hidden" name="selection1" value="0">
+            <form action="/2_page2.html" method="post">
+                <div class="box_class_column">
+                    <div class="box_wrapper_for_top_rad">
+                        <span>
+                            분석하려는 문헌을 선택해주세요! (2023.12ver)<br>
+                        </span>
                     </div>
-                    <div class="selection" data-id="selection2">
-                        <br><img src="{{ url_for('static', filename='assets/2_image2.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>고전번역서<br>(한글)</span></div>
-                        <input type="hidden" name="selection2" value="0">
+                    <div class="for_sub_box">
+                        <div class="selection" data-id="selection1">
+                            <br>
+                            <img src="{{ url_for('static', filename='assets/2_image1.png') }}" class="selection-image">
+                            ©한자<br>
+                            <div class="box_wrapper_for_flat"><span>고전원문</span></div>
+                            <input type="hidden" name="selection1" value="0">
+                        </div>
+                        <div class="selection" data-id="selection2">
+                            <br><img src="{{ url_for('static', filename='assets/2_image2.png') }}" class="selection-image">
+                            ©한글<br>
+                            <div class="box_wrapper_for_flat"><span>고전번역서</span></div>
+                            <input type="hidden" name="selection2" value="0">
+                        </div>
+                        <div class="selection" data-id="selection3">
+                            <br><img src="{{ url_for('static', filename='assets/2_image3.png') }}" class="selection-image">
+                            ©한글<br>
+                            <div class="box_wrapper_for_flat"><span>조선왕조실록</span></div>
+                            <input type="hidden" name="selection3" value="0">
+                        </div>
+                        <div class="selection" data-id="selection4">
+                            <br><img src="{{ url_for('static', filename='assets/2_image4.png') }}" class="selection-image">
+                            ©한글<br>
+                            <div class="box_wrapper_for_flat"><span>신역조선왕조실록</span></div>
+                            <input type="hidden" name="selection4" value="0">
+                        </div>
                     </div>
-                    <div class="selection" data-id="selection3">
-                        <br><img src="{{ url_for('static', filename='assets/2_image3.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>조선왕조실록<br>(한글)</span></div>
-                        <input type="hidden" name="selection3" value="0">
-                    </div>
-                    <div class="selection" data-id="selection4">
-                        <br><img src="{{ url_for('static', filename='assets/2_image4.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>신역조선왕조실록<br>(한글)</span></div>
-                        <input type="hidden" name="selection4" value="0">
+                    <div class="for_sub_box">
+                        <div class="selection" data-id="selection5" style="border-bottom-left-radius: 1.1rem;">
+                            <br><img src="{{ url_for('static', filename='assets/2_image5.png') }}" class="selection-image">
+                            ©한글<br>
+                            <div class="box_wrapper_for_bottom_rad" style="border-bottom-right-radius: 0rem;"><span>승정원일기</span></div>
+                            <input type="hidden" name="selection5" value="0">
+                        </div>
+                        <div class="selection" data-id="selection6">
+                            <br><img src="{{ url_for('static', filename='assets/2_image6.png') }}" class="selection-image">
+                            ©한글<br>
+                            <div class="box_wrapper_for_flat"><span>일성록</span></div>
+                            <input type="hidden" name="selection6" value="0">
+                        </div>
+                        <div class="selection" data-id="selection7">
+                            <br><img src="{{ url_for('static', filename='assets/2_image7.png') }}" class="selection-image">
+                            ©한자<br>
+                            <div class="box_wrapper_for_flat"><span>한국문집총간</span></div>
+                            <input type="hidden" name="selection7" value="0">
+                        </div>
+                        <div class="selection" data-id="selection8" style="border-bottom-right-radius: 1.1rem;">
+                            <br><img src="{{ url_for('static', filename='assets/2_image8.png') }}" class="selection-image">
+                            ©한자<br>
+                            <div class="box_wrapper_for_bottom_rad" style="border-bottom-left-radius: 0rem;"><span>한국고전총간</span></div>
+                            <input type="hidden" name="selection8" value="0">
+                        </div>
                     </div>
                 </div>
-                <div class="for_sub_box">
-                    <div class="selection" data-id="selection5">
-                        <br><img src="{{ url_for('static', filename='assets/2_image5.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>승정원일기<br>(한글)</span></div>
-                        <input type="hidden" name="selection5" value="0">
-                    </div>
-                    <div class="selection" data-id="selection6">
-                        <br><img src="{{ url_for('static', filename='assets/2_image6.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>일성록<br>(한글)</span></div>
-                        <input type="hidden" name="selection6" value="0">
-                    </div>
-                    <div class="selection" data-id="selection7">
-                        <br><img src="{{ url_for('static', filename='assets/2_image7.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>한국문집총간<br>(한자)</span></div>
-                        <input type="hidden" name="selection7" value="0">
-                    </div>
-                    <div class="selection" data-id="selection8">
-                        <br><img src="{{ url_for('static', filename='assets/2_image8.png') }}" class="selection-image"><br>
-                        <div class="box_wrapper"><span>한국고전총간<br>(한자)</span></div>
-                        <input type="hidden" name="selection8" value="0">
-                    </div>
+                <div class="box_class_column">
+                    <div class="box_wrapper_for_top_rad"><span>※문헌 선택 및 하단 키워드 입력 시 참고사항※</span></div>
+                    “고전번역서, 조선왕조실록, 신역 조선왕조실록, 승정원일기, 일성록”은 한글만,<br>
+                    “고전원문, 한국문집총간, 한국고전총간”은 한자만 지원합니다.<br>
+                    하단의 키워드 또한 마찬가지입니다. (한글만 지원하는 문헌에 한자 키워드 불가능) 
                 </div>
-            </div>
-
-            <div class="box_class_column">
-                <div class="box_wrapper"><span>※문헌 선택 및 하단 키워드 입력 시 참고사항※</span></div>
-                “고전번역서, 조선왕조실록, 신역 조선왕조실록, 승정원일기, 일성록”은 한글만,<br>
-                “고전원문, 한국문집총간, 한국고전총간”은 한자만 지원합니다.<br>
-                하단의 키워드 또한 마찬가지입니다. (한글만 지원하는 문헌에 한자 키워드 불가능) 
-            </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><span>분석하려는 키워드를 넣어주세요!<br>
-                    (선택한 문헌 속에서 입력한 키워드가 포함된 문장을 분석합니다.)</span></div>
-                <textarea name="keyword" id="keywordInput" style="width: 100%; min-height: 4rem;"></textarea>
-            </div>
-            
-            <div class="box_class_column">
-                <button id="data_analyze_button" type="submit"><br>데이터 분석하기<br><br></button>
+                <div class="box_class_column">
+                    <div class="box_wrapper_for_top_rad"><span>분석하려는 키워드를 넣어주세요!<br>
+                        (선택한 문헌 속에서 입력한 키워드가 포함된 문장을 분석합니다.)</span></div>
+                    <textarea name="keyword" id="keywordInput"></textarea>
+                </div>
+                <div class="box_class_column">
+                    <button id="data_analyze_button" type="submit"><br>데이터 분석하기<br><br></button>
+                </div>
             </form>
-            </div>
         </div>        
     </div>
     <div class="section section3"></div>

@@ -6,32 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <style>
+        .sub_box {
+            cursor: pointer;
+        }
+        .selected {
+            background-color: #ccc;
+        }
+    </style>
+    <script>
+        selectionState = {};
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var selectionElements = document.querySelectorAll('.sub_box');
+
+            selectionElements.forEach(function (element) {
+                element.addEventListener('click', function () {
+                    element.classList.toggle('selected');
+                    var inputElement = element.querySelector('input[type="hidden"]');
+                    selectionState[element.dataset.id] = inputElement.value = (inputElement.value === '1') ? '0' : '1';
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
-        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text style="font-size: 4rem;">데이터로 철학하다</text>
-        <div class="boxes_column">
-            <div class="box_class_column" id="user_type">
-                사용자 제공 텍스트 데이터 분석
-            </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><span>분석하려는 텍스트를 넣어주세요!</span></div>
-                <textarea style="width: 100%; min-height: 4rem;"></textarea>
-            </div>
-            <div class="box_class_column">
-                <div class="box_wrapper"><span>분석하려는 텍스트의 종류를 선택해주세요!</span></div>
-                <div class="for_sub_box">
-                    <div class="sub_box">한글</div>
-                    <div class="sub_box">한자</div>
+        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text class="project_name">데이터로 철학하다</text>
+        <form action="/3_page2.html" method="post">
+            <div class="boxes_column">
+                <div class="box_class_column" id="user_type">
+                    <br>
+                    사용자 제공 텍스트 데이터 분석<br>
+                    <br>
+                </div>
+                <div class="box_class_column">
+                    <div class="box_wrapper_for_top_rad"><span>분석하려는 텍스트를 넣어주세요!</span></div>
+                    <textarea name="DATA_INPUT" id="DATA_INPUT" accept-charset="UTF-8" style="width: 100%; min-height: 10rem;"></textarea>
+                </div>
+                <div class="box_class_column">
+                    <div class="box_wrapper_for_top_rad"><span>분석하려는 텍스트의 종류를 선택해주세요!</span></div>
+                    <div class="for_sub_box">
+                        <div class="sub_box" data-id="selection_kr" style="border-bottom-left-radius: 1rem;">
+                            한글
+                            <input type="hidden" name="selection_kr" value="0">
+                        </div>
+                        <div class="sub_box" data-id="selection_ch"  style="border-bottom-right-radius: 1rem;">
+                            한자
+                            <input type="hidden" name="selection_ch" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="box_class_column">
+                    <button id="data_analyze_button" type="submit"><br>데이터 분석하기<br><br></button>
                 </div>
             </div>
-            <div class="box_class_column">
-                <button id="data_analyze_button"><br>데이터 분석하기<br><br></button>
-            </div>
-        </div>        
+        </form>  
     </div>
     <div class="section section3"></div>
 </body>

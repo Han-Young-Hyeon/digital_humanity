@@ -6,25 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
     <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="window.location.href='/'" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
-        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text class="project_name">데이터로 철학하다</text>
         <div class="boxes_column">
             <div class="box_class_column">
-                <div class="box_wrapper"><span>디지털 인문학이란?</span></div>
-                정보통신기술의 도움을 받아 새로운 방식으로 수행하는 인문학 연구와 교육, 그리고 이와 관계된 창조적인 저작 활동을 일컫는 말입니다. 이는 전통적인 인문학의 주제를 계승하면서도, 연구 방법 면에서 디지털 기술을 활용하는 연구, 그리고 예전에는 가능하지 않았지만 컴퓨터를 사용함으로써 시도할 수 있게 된 새로운 성격의 활동을 포함합니다.
-                <br><br>
-                디지털인문학 입문(김 현, 임영상, 김바로). HUEBOOKS  
-            </div>
-            <br><img src="{{ url_for('static', filename='assets/1_image1.png') }}" class="firstpage_image"><br>
-            <div class="box_class_column">
-                <div class="box_wrapper"><span>데이터로 철학을 한다는 것은 어떤 의미인가요?</span></div>
+                <div class="box_wrapper_for_top_rad"><span><br>디지털 인문학이란?<br><br></span></div>
+                <br>
+                정보통신기술의 도움을 받아 새로운 방식으로 수행하는 인문학 연구와 교육,<br>
+                그리고 이와 관계된 창조적인 저작 활동을 일컫는 말입니다.<br>
+                이는 전통적인 인문학의 주제를 계승하면서도, 연구 방법 면에서 디지털 기술을 활용하는 연구,<br>
+                그리고 예전에는 가능하지 않았지만 컴퓨터를 사용함으로써 시도할 수 있게 된<br>
+                새로운 성격의 활동을 포함합니다.<br>
+                <br>
+                디지털인문학 입문(김 현, 임영상, 김바로). HUEBOOKS<br>
                 <br>
             </div>
+                <img src="{{ url_for('static', filename='assets/1_image1.png') }}" class="firstpage_image">
         </div>        
     </div>
     <div class="section section3"></div>

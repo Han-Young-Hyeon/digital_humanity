@@ -1,6 +1,4 @@
-###################################
-####### 한국고전DB 한문버전 ########
-###################################
+############################## 한국고전종합DB 한문 버전 ##############################
 
 import requests
 import pandas as pd
@@ -121,21 +119,6 @@ def time_series_data(df) : # 여기에 들어가는 데이터 프레임은 total
 
     df_mean = df_for_sent.mean()
 
-    # fig = px.line(df_mean, y='sentiment', title='키워드에 대한 시간에 따른 평가')
-    # fig.update_layout(
-    #     title={
-    #         'text': "키워드에 대한 시간에 따른 평가",
-    #         'y':0.9,
-    #         'x':0.5,
-    #         'xanchor': 'center',
-    #         'yanchor': 'top'
-    #     },
-    #     xaxis_title='간행년',
-    #     yaxis_title='키워드 평가 수치화',
-    #     legend_title='Legend'
-    # )
-
-    # fig.show()
     return df_mean
 
 ### GPT 함수 : text에 질문을 넣을 경우 그에 따른 결과 출력 ###
@@ -223,36 +206,6 @@ def frequency_analysis(df) : # 여기 데이터 프레임에는 total_data를 �
 
     frequency['단어 2'] = frequency['단어2'].apply(lambda x: ', '.join(x) if isinstance(x, tuple) else x)
 
-    fig1 = go.Figure(data=[go.Bar(x=frequency['단어1'], y=frequency['빈도1'])])
-
-    fig1.update_layout(
-        title={
-            'text': "키워드 포함 맥락 내 단어 출현 빈도 1",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어 1',
-        yaxis_title='빈도',
-        legend_title='Legend'
-    )
-
-    fig2 = go.Figure(data=[go.Bar(x=frequency['단어 2'], y=frequency['빈도2'])])
-
-    fig2.update_layout(
-        title={
-            'text': "키워드 포함 맥락 내 단어 출현 빈도 2",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어 2',
-        yaxis_title='빈도',
-        legend_title='Legend'
-    )
-
     return frequency, df ## 첫번째 데이터프레임은 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
 
 ### 워드 클라우드 생성 ###
@@ -327,10 +280,8 @@ def draw_network(G):
 
     pos = nx.kamada_kawai_layout(G)
 
-    # Create a new figure
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    # Draw the network graph using NetworkX
     nx.draw_networkx(G,
                      pos=pos,
                      node_size=1500,
@@ -342,12 +293,10 @@ def draw_network(G):
                      width=width,
                      ax=ax)
 
-    # Save the figure to a BytesIO buffer
     network_buffer = BytesIO()
     fig.savefig(network_buffer, format="PNG")
     plt.close(fig)  # Close the figure
 
-    # Encode the image to base64
     network_str = base64.b64encode(network_buffer.getvalue()).decode("utf-8")
 
     return network_str
@@ -362,15 +311,12 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 def create_heatmap(df_sim):
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    # Plot the heatmap using Seaborn
     sns.heatmap(df_sim, annot=True, fmt=".2f", cmap="YlGnBu", square=True, ax=ax)
     ax.set_title("빈출 단어 간 연관성 분석")
 
-    # Save the figure to a BytesIO buffer
     img_buffer = BytesIO()
     FigureCanvas(fig).print_png(img_buffer)
 
-    # Encode the image to base64
     img_str = base64.b64encode(img_buffer.getvalue()).decode("utf-8")
 
     return img_str
@@ -449,58 +395,10 @@ def network_analysis(correldata) : ## correldata는 cosine_relate의 함숫값�
     deg_df = pd.DataFrame(deg_centrality.items(), columns=['token2', 'degree_centrality'])
     bet_df=pd.DataFrame(bet_centrality.items(), columns=['token3', 'between_centrality'])
 
-    cent_df = pd.concat([close_df, deg_df, bet_df], axis=1)
-
-    fig1 = go.Figure(data=[go.Bar(x=cent_df['token1'], y=cent_df['close_centrality'])])
-
-    fig1.update_layout(
-        title={
-            'text': "근접 중심성 지표",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
-    fig2 = go.Figure(data=[go.Bar(x=cent_df['token2'], y=cent_df['degree_centrality'])])
-
-    fig2.update_layout(
-        title={
-            'text': "연결 중심성",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
-    fig3 = go.Figure(data=[go.Bar(x=cent_df['token3'], y=cent_df['between_centrality'])])
-
-    fig3.update_layout(
-        title={
-            'text': "매개 중심성",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
     return pd.concat([close_df, deg_df, bet_df], axis=1), network_image
 
-###################################
-####### 한국고전DB 한글버전 ########
-###################################
+############################## 한국고전종합DB 한문 버전 ##############################
+############################## 한국고전종합DB 한글 버전 ##############################
 
 import requests
 import pandas as pd
@@ -615,22 +513,6 @@ def time_series_data_kr(df) : # 여기에 들어가는 데이터 프레임은 to
 
     df_mean = df_for_sent.mean()
 
-    # fig = px.line(df_mean, y='sentiment', title='키워드에 대한 시간에 따른 평가')
-    # fig.update_layout(
-    #     title={
-    #         'text': "키워드에 대한 시간에 따른 평가",
-    #         'y':0.9,
-    #         'x':0.5,
-    #         'xanchor': 'center',
-    #         'yanchor': 'top'
-    #     },
-    #     xaxis_title='간행년',
-    #     yaxis_title='키워드 평가 수치화',
-    #     legend_title='Legend'
-    # )
-
-    # fig.show()
-
     return df_mean
 
 ###
@@ -701,39 +583,6 @@ def frequency_analysis_kr(df) : # 여기 데이터 프레임에는 total_data를
 
     frequency['단어 2'] = frequency['단어2'].apply(lambda x: ', '.join(x) if isinstance(x, tuple) else x)
 
-    fig1 = go.Figure(data=[go.Bar(x=frequency['단어1'], y=frequency['빈도1'])])
-
-    fig1.update_layout(
-        title={
-            'text': "키워드 포함 맥락 내 단어 출현 빈도 1",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어 1',
-        yaxis_title='빈도',
-        legend_title='Legend'
-    )
-
-    fig2 = go.Figure(data=[go.Bar(x=frequency['단어 2'], y=frequency['빈도2'])])
-
-    fig2.update_layout(
-        title={
-            'text': "키워드 포함 맥락 내 단어 출현 빈도 2",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어 2',
-        yaxis_title='빈도',
-        legend_title='Legend'
-    )
-
-    # fig1.show()
-    # fig2.show()
-
     return frequency, df ## 첫번째 데이터프레임은 같이 등장하는 빈도가 높은 단어를 선별하여 이후 연관어 분석에 활용하기 위한 데이터 / 두 번째는 token 확보 데이터
 
 ### 워드 클라우드 생성 ###
@@ -761,7 +610,6 @@ def generate_wordcloud_image_kr(df) : # total data에서 만들어진 것 중 �
     wc = WordCloud(font_path=font_path, background_color="white", relative_scaling=0.2) ### font source need
     cloud = wc.generate_from_frequencies(dict(tags))
 
-    # 이미지를 바이트로 변환하여 반환
     img_buffer = BytesIO()
     cloud.to_image().save(img_buffer, format="PNG")
     img_str = base64.b64encode(img_buffer.getvalue()).decode("utf-8")
@@ -846,55 +694,83 @@ def network_analysis_kr(correldata) : ## correldata는 cosine_relate의 함숫�
     deg_df = pd.DataFrame(deg_centrality.items(), columns=['token2', 'degree_centrality'])
     bet_df=pd.DataFrame(bet_centrality.items(), columns=['token3', 'between_centrality'])
 
-    cent_df = pd.concat([close_df, deg_df, bet_df], axis=1)
-
-    fig1 = go.Figure(data=[go.Bar(x=cent_df['token1'], y=cent_df['close_centrality'])])
-
-    fig1.update_layout(
-        title={
-            'text': "근접 중심성 지표",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
-    fig2 = go.Figure(data=[go.Bar(x=cent_df['token2'], y=cent_df['degree_centrality'])])
-
-    fig2.update_layout(
-        title={
-            'text': "연결 중심성",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
-    fig3 = go.Figure(data=[go.Bar(x=cent_df['token3'], y=cent_df['between_centrality'])])
-
-    fig3.update_layout(
-        title={
-            'text': "매개 중심성",
-            'y':0.9,
-            'x':0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        xaxis_title='단어',
-        yaxis_title='중심도',
-        legend_title='Legend'
-    )
-
-    # fig1.show()
-    # fig2.show()
-    # fig3.show()
-
     return pd.concat([close_df, deg_df, bet_df], axis=1), network_image
+
+############################## 한국고전종합DB 한글 버전 ##############################
+############################### 사용자데이터 한문 버전 ###############################
+
+def text_frequently(text) :
+    df = pd.DataFrame({"기록" : [text]})
+    img_str = generate_wordcloud_image(df)
+    df['token'] = df['기록'].progress_map(lambda x:tokenize(x,['NOUN','PROPN','VERB','ADV', 'ADJ']))
+    
+    cnt = Counter(list(itertools.chain(*df['token'].tolist())))
+    frequency = pd.DataFrame(cnt.most_common(10))
+    frequency.rename(columns={0 : "단어1", 1 : "빈도1"}, inplace=True)
+    
+    token_list = list(itertools.chain(*df['token'].tolist()))
+    bgs = nltk.bigrams(token_list)
+    fdist= nltk.FreqDist(bgs)
+    fd= fdist.items()
+    fd_df = pd.DataFrame(fd, columns =['단어2', '빈도2'])
+
+    fd_df=fd_df.sort_values('빈도2', ascending = False)
+    fd_df.reset_index(drop = True, inplace = True)
+
+    if len(fd_df) > 10 :
+        fd_df = fd_df.head(10)
+    else :
+        fd_df = fd_df
+
+    frequency = pd.concat([frequency, fd_df], axis=1)
+
+    frequency.index = frequency.index + 1
+
+    frequency['단어 2'] = frequency['단어2'].apply(lambda x: ', '.join(x) if isinstance(x, tuple) else x)
+
+    return img_str, frequency, df
+
+def text_correlate(frequency_text1, frequency_text2) : ## text_frequently의 함숫값
+    df_tfidf, _, _, img_str = cosine_relate(frequency_text1, frequency_text2)
+
+    return df_tfidf, img_str
+
+############################### 사용자데이터 한문 버전 ###############################
+############################### 사용자데이터 한글 버전 ###############################
+
+def text_frequently_kr(text) :
+    df = pd.DataFrame({"기록" : [text]})
+    img_str=generate_wordcloud_image_kr(df)
+    df['token'] = df['기록'].progress_apply(lambda x: tokenize_kr(x, ['NNG', 'NNP', 'VV', 'VA', 'MAG', 'MAJ']))
+    
+    cnt = Counter(list(itertools.chain(*df['token'].tolist())))
+    frequency = pd.DataFrame(cnt.most_common(10))
+    frequency.rename(columns={0 : "단어1", 1 : "빈도1"}, inplace=True)
+    
+    token_list = list(itertools.chain(*df['token'].tolist()))
+    bgs = nltk.bigrams(token_list)
+    fdist= nltk.FreqDist(bgs)
+    fd= fdist.items()
+    fd_df = pd.DataFrame(fd, columns =['단어2', '빈도2'])
+
+    fd_df=fd_df.sort_values('빈도2', ascending = False)
+    fd_df.reset_index(drop = True, inplace = True)
+
+    if len(fd_df) > 10 :
+        fd_df = fd_df.head(10)
+    else :
+        fd_df = fd_df
+
+    frequency = pd.concat([frequency, fd_df], axis=1)
+
+    frequency.index = frequency.index + 1
+
+    frequency['단어 2'] = frequency['단어2'].apply(lambda x: ', '.join(x) if isinstance(x, tuple) else x)
+
+    return img_str, frequency, df
+
+def text_correlate_kr(frequency_text1, frequency_text2):
+    df_tfidf, _, _, img_str = cosine_relate_kr(frequency_text1,frequency_text2)
+    return df_tfidf, img_str
+
+############################### 사용자데이터 한글 버전 ###############################

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Humanity</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <script>
         function redirectToPage(page) {
             window.location.href = '/' + page;
@@ -16,27 +17,26 @@
     <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="redirectToPage('index.html')" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
-        <text style="font-size: 1rem;">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text style="font-size: 4rem;">데이터로 철학하다</text>
+        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+        <text class="project_name">데이터로 철학하다</text>
         <br>
         <div class="boxes">
             <div class="box_class" onclick="redirectToPage('1_page1.html')">
                 <br><img src="{{ url_for('static', filename='assets/main_image1.png') }}" class="box-image"><br>
-                <div class="box_wrapper"><span>디지털 인문학이란?</span></div>
+                <div class="box_wrapper_for_bottom_rad"><span>디지털 인문학이란?</span></div>
             </div>
             <div class="box_class" onclick="redirectToPage('2_page1.html')">
                 <br><img src="{{ url_for('static', filename='assets/main_image2.png') }}" class="box-image"><br>
-                <div class="box_wrapper"><span>한국고전종합DB<br>데이터 분석</span></div>
+                <div class="box_wrapper_for_bottom_rad"><span>한국고전종합DB<br>데이터 분석</span></div>
             </div>
             <div class="box_class" onclick="redirectToPage('3_page1.html')">
                 <br><img src="{{ url_for('static', filename='assets/main_image3.png') }}" class="box-image"><br>
-                <div class="box_wrapper"><span>사용자 제공 텍스트<br>데이터 분석</span></div>
+                <div class="box_wrapper_for_bottom_rad"><span>사용자 제공 텍스트<br>데이터 분석</span></div>
             </div>
         </div>
+        <br><br>
     </div>
     <div class="section section3"></div>
-    <br>
-    <br>
-    <br>
+    
 </body>
 </html>
