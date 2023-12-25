@@ -18,6 +18,10 @@ body {
 .project_name{
     font-size: 3rem;
 }
+.name{
+    width: 32rem;
+    align-items: column;
+}
 .boxes{
     display: flex;
     flex-direction:row;
@@ -81,12 +85,9 @@ body {
 .box_wrapper_for_flat span{
     color:white;
 }
-#icon { 
-    position: fixed; 
-    top: 1rem; 
-    left: 1rem; 
+.icon { 
     width: 4rem; 
-    height: 4rem; 
+    height: 4rem;
 }
 .section {
     flex: 1;
@@ -206,6 +207,11 @@ h4{
     align-items: center;
     cursor: pointer;
     border-radius: 1rem;
+}
+@media (max-width: 95rem) {
+    .navbar {
+        display: none;
+    }
 }
 #keywordInput{
     width: 100%;

@@ -14,11 +14,16 @@
     </script>
 </head>
 <body>
-    <img id="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" onclick="redirectToPage('index.html')" alt="Icon">
     <div class="section section1"></div>
     <div class="section section2">
-        <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
-        <text class="project_name">데이터로 철학하다</text>
+        <div class="boxes">
+            <a href="/"><img class="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" alt="Icon"></a>
+            <div class="name">
+                <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+                <text class="project_name">데이터로 철학하다</text>
+            </div>
+            <a href="/chat.html"><img class="icon" src="{{ url_for('static', filename='assets/chatbot.png') }}" alt="Icon"></a>
+        </div>
         <br>
         <div class="boxes">
             <div class="box_class" onclick="redirectToPage('1_page1.html')">
@@ -37,6 +42,5 @@
         <br><br>
     </div>
     <div class="section section3"></div>
-    
 </body>
 </html>

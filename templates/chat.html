@@ -1,0 +1,90 @@
+<!-- templates/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Humanity</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <style>
+        #chat {
+            width: 100%;
+            height: 32rem;
+            overflow-y: scroll; 
+            border: 1px solid #ccc;
+            padding: 10px; 
+            box-sizing: border-box;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            scroll-behavior: smooth;
+        } 
+        input {
+            width: 36rem;
+            padding: 1rem;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 1rem;
+        }
+        button {
+            width: 6rem;
+            background-color: black;
+            color: white;
+            padding: 1rem;
+            border: 1px solid black; 
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var chatElement = document.getElementById('chat');
+            var savedScrollTop = localStorage.getItem('chatScrollTop');
+
+            if (savedScrollTop !== null) {
+                chatElement.scrollTop = savedScrollTop;
+            }
+
+            var formElement = document.querySelector('form');
+            formElement.addEventListener('submit', function () {
+                localStorage.setItem('chatScrollTop', chatElement.scrollTop);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="section section1"></div>
+    <div class="section section2">
+        <br><br>
+        <div class="boxes">
+            <a href="/"><img class="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" alt="Icon"></a>
+            <div class="name">
+                <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
+                <text class="project_name">데이터로 철학하다</text>
+            </div>
+            <a href="/chat.html"><img class="icon" src="{{ url_for('static', filename='assets/chatbot.png') }}" alt="Icon"></a>
+        </div>
+        <div class="boxes_column">
+            <div class="box_class_column">
+                <div class="box_wrapper_for_top_rad"><h4>한국철학·문화 챗봇 서비스</h4></div>
+                <div id="chat" style="text-align:left">
+                    {% for message in messages %}
+                        {% if message.role == 'user' %}
+                            <p style="color: #145227;">[나] {{ message.content }}</p>
+                        {% elif message.role == 'assistant' %}
+                            <p>[한국철학·문화 도우미] {{ message.content }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+            <form method="POST" action="/chat_result">
+                <input type="text" id="chatbot_input" name="chatbot_input" placeholder="궁금한 점을 물어보세요!" required>
+                <button type="submit">Submit</button>
+                <br><br>
+            </form>
+        </div>        
+    </div>
+    <div class="section section3"></div>
+</body>
+</html>
