@@ -15,13 +15,25 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function () {
-            const links = document.querySelectorAll('.navbar a');
-            
-            links.forEach(link => {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const sectionId = link.getAttribute('data-section');
-                    scrollToSection(sectionId);
+            const toggleDescriptionButtons = document.querySelectorAll('.toggleDescriptionImage');
+
+            toggleDescriptionButtons.forEach(button => {
+                const targetId = button.getAttribute('data-target');
+                const description = document.getElementById(targetId);
+
+                button.addEventListener('click', function () {
+                    const allDescriptions = document.querySelectorAll('.description');
+                    allDescriptions.forEach(desc => {
+                        if (desc !== description) {
+                            desc.style.display = 'none';
+                        }
+                    });
+
+                    if (description.style.display === 'none' || description.style.display === '') {
+                        description.style.display = 'block';
+                    } else {
+                        description.style.display = 'none';
+                    }
                 });
             });
         });
@@ -57,8 +69,11 @@
                 {{TEXT}}
                 <br>
             </div>
-            <div class="box_class_column" data-section="user_frequency_analysis" id="user_frequency_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>빈도 분석</h4></div>
+            <div class="box_class_column" data-section="user_frequency_analysis" id="user_frequency_analysis" >
+                <div class="box_wrapper_for_top_rad">
+                    <h4>빈도 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_frequency_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>,
                 <br>
                 <img src="data:image/png;base64,{{ user_word_cloud }}" alt="User wordcloud"  style="width:80%;">
                 <div id="user_frequency_graph1"></div>
@@ -66,7 +81,10 @@
                 <br>
             </div>
             <div class="box_class_column" data-section="user_association_analysis" id="user_association_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>연관어 분석</h4></div>
+                <div class="box_wrapper_for_top_rad">
+                    <h4>연관어 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_association_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>
                 <img src="data:image/png;base64,{{ user_heatmap_image }}" alt="User Heatmap"  style="width:80%;">
                 <br><br>
                 {{ user_df_tfidf.to_html(classes="table table-bordered table-striped", render_links=True, index=False) | safe }}
@@ -74,7 +92,16 @@
             </div>
         </div>        
     </div>
-    <div class="section section3"></div>
+    <div class="section section3">
+        <div class="description" data-section="user_frequency_description" id="user_frequency_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad"><span><br>빈도 분석이란?<br><br></span></div><br>
+            빈도 분석은 한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.<br><br>
+        </div>
+        <div class="description" data-section="user_association_description" id="user_association_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad"><span><br>연관어 분석이란?<br><br></span></div><br>
+            연관어 분석은 수정해야한다. 한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.<br><br>
+        </div>
+    </div>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
         var user_dataframe1 = {{ user_df.to_dict(orient='list')|tojson|safe }};
