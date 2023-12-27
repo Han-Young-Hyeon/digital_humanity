@@ -32,7 +32,7 @@ git clone https://github.com/1delicado02/digital_humanity.git
 python main.py
 ```
 
-## 주요 기능
+## 주요 기능 
 
 ### 1. 디지털 인문학 소개
 
@@ -42,7 +42,5 @@ python main.py
 
 ### 4. ChatGPT 기반 챗봇
 
-
 ## 가이드라인
-
 
