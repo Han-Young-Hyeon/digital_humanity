@@ -34,13 +34,14 @@
 <body>
     <div class="section section1"></div>
     <div class="section section2">
+        <br><br>
         <div class="boxes">
             <a href="/"><img class="icon" src="{{ url_for('static', filename='assets/home_button.png') }}" alt="Icon"></a>
             <div class="name">
                 <text class="contest_name">제2회 한국철학·문화 디지털 융합 인재 공모전</text><br>
                 <text class="project_name">데이터로 철학하다</text>
             </div>
-            <a href="/chat.html"><img class="icon" src="{{ url_for('static', filename='assets/chatbot.png') }}" alt="Icon"></a>
+            <a href="/chat"><img class="icon" src="{{ url_for('static', filename='assets/chatbot.png') }}" alt="Icon"></a>
         </div>
         <div class="boxes_column">
             <div class="box_class_column" id="user_type">
@@ -48,7 +49,7 @@
                 한국고전종합DB 데이터 분석<br>
                 <br>
             </div>
-            <form action="/2_page2.html" method="post">
+            <form action="/db_result" method="post">
                 <div class="box_class_column">
                     <div class="box_wrapper_for_top_rad">
                         <span>
