@@ -21,6 +21,7 @@ body {
 .name{
     width: 32rem;
     align-items: column;
+    font-weight: 450;
 }
 .boxes{
     display: flex;

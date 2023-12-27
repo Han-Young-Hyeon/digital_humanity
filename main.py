@@ -6,19 +6,19 @@ from chatbot import *
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def home():
     return render_template('index.html')
 
-@app.route('/1_page1.html')
-def page1_1():
+@app.route('/about')
+def about():
     return render_template('1_page1.html')
 
-@app.route('/2_page1.html')
-def page2_1():
+@app.route('/db_analysis')
+def db_analysis():
     return render_template('2_page1.html')
 
-@app.route('/2_page2.html', methods=['POST'])
-def result():
+@app.route('/db_result', methods=['POST'])
+def db_result():
     if request.method == 'POST':
         고전원문_ck = int(request.form.get('selection1', 0))
         고전번역서_ck = int(request.form.get('selection2', 0))
@@ -82,11 +82,11 @@ def result():
                                network_image=network_image
                                )
 
-@app.route('/3_page1.html')
+@app.route('/user_analysis')
 def page3_1():
     return render_template('3_page1.html')
 
-@app.route('/3_page2.html', methods=['POST'])
+@app.route('/user_result', methods=['POST'])
 def page3_2():
     if request.method == 'POST':
         TEXT = bleach.clean(request.form.get('DATA_INPUT', type=str))
@@ -110,7 +110,7 @@ def page3_2():
                                user_df_tfidf=user_df_tfidf
                                )
     
-@app.route('/chat.html')
+@app.route('/chat')
 def chat_page():
     return render_template('chat.html')
     
@@ -137,4 +137,4 @@ def before_request():
         request.json_data = request.get_json()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run()
