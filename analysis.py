@@ -732,6 +732,7 @@ def text_frequently(text) :
 
 def text_correlate(frequency_text1, frequency_text2) : ## text_frequently의 함숫값
     df_tfidf, _, _, img_str = cosine_relate(frequency_text1, frequency_text2)
+    df_tfidf.columns = ['빈출 단어', '연관성 점수']
 
     return df_tfidf, img_str
 
@@ -771,6 +772,8 @@ def text_frequently_kr(text) :
 
 def text_correlate_kr(frequency_text1, frequency_text2):
     df_tfidf, _, _, img_str = cosine_relate_kr(frequency_text1,frequency_text2)
+    df_tfidf.columns = ['빈출 단어', '연관성 점수']
+
     return df_tfidf, img_str
 
 ############################### 사용자데이터 한글 버전 ###############################

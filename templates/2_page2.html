@@ -25,6 +25,29 @@
                 });
             });
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleDescriptionButtons = document.querySelectorAll('.toggleDescriptionImage');
+
+            toggleDescriptionButtons.forEach(button => {
+                const targetId = button.getAttribute('data-target');
+                const description = document.getElementById(targetId);
+
+                button.addEventListener('click', function () {
+                    const allDescriptions = document.querySelectorAll('.description');
+                    allDescriptions.forEach(desc => {
+                        if (desc !== description) {
+                            desc.style.display = 'none';
+                        }
+                    });
+
+                    if (description.style.display === 'none' || description.style.display === '') {
+                        description.style.display = 'block';
+                    } else {
+                        description.style.display = 'none';
+                    }
+                });
+            });
+        });
     </script>
 </head>
 <body>
@@ -59,7 +82,10 @@
                 {{ result_df | safe}}
             </div>
             <div class="box_class_column" data-section="frequency_analysis" id="frequency_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>빈도 분석</h4></div>
+                <div class="box_wrapper_for_top_rad">
+                    <h4>빈도 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_frequency_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>
                 <br>
                 <img src="data:image/png;base64,{{ wordcloud_image }}" alt="WordCloud Image" style="width:80%;">
                 <br>
@@ -68,28 +94,59 @@
                 <br>
             </div>
             <div class="box_class_column" data-section="network_analysis" id="network_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>네트워크 분석</h4></div>
+                <div class="box_wrapper_for_top_rad">
+                    <h4>네트워크 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_network_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>
                 <img src="data:image/png;base64,{{ network_image }}" alt="Network Graph"  style="width:80%;">
+                <br>
                 <div id="network-graph1"></div>
                 <div id="network-graph2"></div>
                 <div id="network-graph3"></div>
                 <br>
             </div>
             <div class="box_class_column" data-section="association_analysis" id="association_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>연관어 분석</h4></div>
+                <div class="box_wrapper_for_top_rad">
+                    <h4>연관어 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_association_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>
                 <img src="data:image/png;base64,{{ heatmap_image }}" alt="Cosine Similarity Heatmap"  style="width:80%;">
-                <br><br>
             </div>
             <div class="box_class_column" data-section="emotion_analysis" id="emotion_analysis">
-                <div class="box_wrapper_for_top_rad"><h4>시계열 기반 감정 분석</h4></div>
+                <div class="box_wrapper_for_top_rad">
+                    <h4>시계열 기반 감정 분석</h4>
+                    <img class="toggleDescriptionImage" data-target="user_emotion_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
+                </div>
                 <div id="time-series-chart"></div>
                 <br>
             </div>
         </div>        
     </div>
     <div class="section section3">
-        
-    </div>
+        <div class="description" data-section="user_frequency_description" id="user_frequency_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad"><span><br>빈도 분석이란?<br><br></span></div>
+            <div class="description_text">빈도 분석은  한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.</div>
+        </div>
+        <div class="description" data-section="user_association_description" id="user_association_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad"><span><br>연관어 분석이란?<br><br></span></div>
+            <div class="description_text">연관어 분석은 선택된 텍스트에서 자주 등장하는 단어들 사이의 관계를 탐색하고, 이들이 어떻게 함께 언급되는지를 분석한다. 빈도에 따라 색상을 달리하여 시각화함으로써, 중요한 단어들의 상호 연결성을 직관적으로 파악할 수 있다.</div>
+        </div>
+        <div class="description" data-section="user_emotion_description" id="user_emotion_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad">
+                <span><br>시계열 기반 감정 분석이란?<br><br></span>
+            </div>
+            <div class="description_text">
+                시계열 기반 감정 분석은 선택된 문헌에서 특정 키워드를 포함하는 문장이나 문단의 감정적 측면을 평가하고, 이를 하나의 숫자로 표현하여 시간에 따른 변화를 추적한다. 인공지능 학습 모델을 사용하여 각 텍스트 조각의 긍정성 또는 부정성을 측정하고, 이를 시계열 선 그래프로 시각화함으로써, 문헌의 감정적 경향이 시간에 따라 어떻게 변화하는지 확인할 수 있다.
+            </div>
+        </div>
+        <div class="description" data-section="user_network_description" id="user_network_description" style="display: none;">
+            <div class="box_wrapper_for_top_rad">
+                <span><br>네트워크 분석이란?<br><br></span>
+            </div>
+            <div class="description_text">
+                네트워크 분석은 텍스트 내의 단어들 사이의 관계를 탐색하여, 이를 기반으로 복잡한 단어 네트워크를 구축한다. 이 과정에서 문서-단어 행렬과 단어 공기 매트릭스를 생성하여 단어들 간의 유사성과 연결성을 분석한다. 또한, 근접 중심성, 연결 중심성, 매개 중심성과 같은 네트워크 지표를 이용해 각 단어의 중요도를 막대 그래프로 시각화함으로써, 네트워크 내에서 단어들의 역할과 중요성을 명확하게 이해할 수 있다.
+            </div>
+        </div>
     </div>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
@@ -194,6 +251,7 @@
         };
 
         Plotly.newPlot('network-graph3', [trace3], layout3); // 매개중심성 그래프
+
     </script>
 </body>
 </html>

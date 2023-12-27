@@ -96,7 +96,7 @@ def page3_2():
 
         if 한자_ck==1: # 사용자데이터 한문 버전
             user_word_cloud, user_df, df = text_frequently(TEXT)
-            user_df_tfidf, user_heatmap_image = text_correlate(user_df, df)
+            user_df_tfidf, user_heatmap_image = text_correlatSe(user_df, df)
         else: # 사용자데이터 한글 버전
             user_word_cloud, user_df, df = text_frequently_kr(TEXT)
             user_df_tfidf, user_heatmap_image = text_correlate_kr(user_df, df)

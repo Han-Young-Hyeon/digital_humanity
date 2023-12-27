@@ -15,6 +15,17 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('.navbar a');
+            
+            links.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const sectionId = link.getAttribute('data-section');
+                    scrollToSection(sectionId);
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
             const toggleDescriptionButtons = document.querySelectorAll('.toggleDescriptionImage');
 
             toggleDescriptionButtons.forEach(button => {
@@ -66,14 +77,13 @@
             </div>
             <div class="box_class_column" data-section="input_text" id="input_text">
                 <div class="box_wrapper_for_top_rad"><h4>입력한 텍스트</h4></span></div>
-                {{TEXT}}
-                <br>
+                <div style="padding:10px">{{TEXT}}</div>
             </div>
             <div class="box_class_column" data-section="user_frequency_analysis" id="user_frequency_analysis" >
                 <div class="box_wrapper_for_top_rad">
                     <h4>빈도 분석</h4>
                     <img class="toggleDescriptionImage" data-target="user_frequency_description" src="{{ url_for('static', filename='assets/description_button.png') }}" alt="Toggle Description">
-                </div>,
+                </div>
                 <br>
                 <img src="data:image/png;base64,{{ user_word_cloud }}" alt="User wordcloud"  style="width:80%;">
                 <div id="user_frequency_graph1"></div>
@@ -94,12 +104,12 @@
     </div>
     <div class="section section3">
         <div class="description" data-section="user_frequency_description" id="user_frequency_description" style="display: none;">
-            <div class="box_wrapper_for_top_rad"><span><br>빈도 분석이란?<br><br></span></div><br>
-            빈도 분석은 한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.<br><br>
+            <div class="box_wrapper_for_top_rad"><span><br>빈도 분석이란?<br><br></span></div>
+            <div class="description_text">빈도 분석은  한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.</div>
         </div>
         <div class="description" data-section="user_association_description" id="user_association_description" style="display: none;">
-            <div class="box_wrapper_for_top_rad"><span><br>연관어 분석이란?<br><br></span></div><br>
-            연관어 분석은 수정해야한다. 한국고전종합DB 기반의 문헌 중 입력한 키워드가 들어간 문장을 중심으로, 단어나 한자의 출현 빈도를 계산하고, 이를 시각화하는 데이터분석기법이다. 워드클라우드를 통해 전체 텍스트의 주요 단어를 한눈에 볼 수 있으며, 단일 한자와 두 한자가 연결된 조합의 빈도는 막대 그래프를 통해 명확하게 비교할 수 있다.<br><br>
+            <div class="box_wrapper_for_top_rad"><span><br>연관어 분석이란?<br><br></span></div>
+            <div class="description_text">연관어 분석은 선택된 텍스트에서 자주 등장하는 단어들 사이의 관계를 탐색하고, 이들이 어떻게 함께 언급되는지를 분석한다. 빈도에 따라 색상을 달리하여 시각화함으로써, 중요한 단어들의 상호 연결성을 직관적으로 파악할 수 있다.</div>
         </div>
     </div>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>

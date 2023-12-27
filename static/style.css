@@ -90,6 +90,10 @@ body {
     width: 4rem; 
     height: 4rem;
 }
+.toggleDescriptionImage{
+    width: 1.5rem; 
+    height: 1.5rem;
+}
 .section {
     flex: 1;
     display: flex;
@@ -154,6 +158,7 @@ body {
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 1rem;
 }
 .for_sub_box{
     display: flex;
@@ -217,6 +222,11 @@ h4{
         display: none;
     }
 }
+@media (max-width: 95rem) {
+    #page2_description {
+        display: none;
+    }
+}
 .description {
     position:fixed;
     top: 10rem;
@@ -228,12 +238,26 @@ h4{
     cursor: pointer;
     border-radius: 1rem;
 }
+.description_text{
+    padding: 10px; 
+}
+#page2_description_text{
+    padding: 10px; 
+    background-color: white;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+#page2_description{
+    position:fixed;
+    width: 22rem;
+    top: 16rem
+}
 #keywordInput{
     width: 100%;
     min-height: 2rem;
     resize: none;
     box-sizing: border-box;
-    background-color: #f2f2f2;
+    background-color: white;
     border: 1px solid #ccc;
     padding: 10px; 
     font-size: 14px;
