@@ -1,4 +1,4 @@
-# 프로젝트로 철학하다
+# 데이터로 철학하다
 <img width="flex" alt="DiHu_Home" src="https://github.com/1delicado02/digital_humanity/assets/107872531/c8a5bd2e-eda2-4039-9d30-7bf8d8275f01">
 제2회 한국철학·문화 디지털 융합 인재 공모전, 디지털 기술을 활용한 철학 및 인문학의 확장적 데이터 분석 서비스<br>
 
