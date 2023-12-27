@@ -35,7 +35,9 @@ python main.py
 ## 주요 기능 
 
 ### 1. 디지털 인문학 소개
-<img width="flex" alt="DiHu_Home" src="[https://github.com/1delicado02/digital_humanity/assets/145963484/ce10be83-2074-4346-9eff-9db8d5fe1828]">
+![image](https://github.com/1delicado02/digital_humanity/assets/145963484/699ea139-adcb-468b-8788-557b9038d522)
+<br>
+디지털 인문학에 대한 소개입니다. 디지털 인문학이 생소한 사람들을 위한 소개 페이지입니다.
 
 
 
@@ -45,6 +47,7 @@ python main.py
 
 ### 4. ChatGPT 기반 챗봇
 ![image](https://github.com/1delicado02/digital_humanity/assets/145963484/e006adea-8e37-479f-9e28-449a95eec7d2)
+<br<
 데이터 분석 관련 배경지식이 부족한 인문학/철학 연구자들을 위한 챗봇 서비스입니다. 혹시라도 저희 팀이 제공한 각종 데이터분석기법이 생소하거나, 결과물의 해석이 어려울 때 활용하면 됩니다.
 
 ## 가이드라인
