@@ -5,9 +5,9 @@
 
     
 ## 팀 구성
-**김겨레**([@popper6508](https://github.com/popper6508)) 데이터 분석 솔루션 개발 <br>
-**김여리**([@1delicado02](https://github.com/1delicado02)) 웹 개발 <br>
-**한영헌**([@Han-Young-Hyeon](https://github.com/Han-Young-Hyeon)) 기획 & 디자인 <br>
+김겨레([@popper6508](https://github.com/popper6508)) 데이터 분석 솔루션 개발 <br>
+김여리([@1delicado02](https://github.com/1delicado02)) 웹 개발 <br>
+한영헌([@Han-Young-Hyeon](https://github.com/Han-Young-Hyeon)) 기획 & 디자인 <br>
 
   
 ## 기술 스택
@@ -32,4 +32,9 @@ git clone https://github.com/1delicado02/digital_humanity.git
 python main.py
 ```
 
+## 주요 기능
+
+
 ## 가이드라인
+
+
